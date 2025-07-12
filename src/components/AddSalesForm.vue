@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive, watch } from 'vue';
 import { useSalesStore } from '@/stores/sales';
 import { getFormattedDate } from '@/utils/formattedDate';
 
@@ -8,6 +8,11 @@ const salesObj = reactive({
   name: '',
   date: getFormattedDate(),
   numberOfCards: 1,
+  dueDates: salesStore.generateDueDates(getFormattedDate()),
+});
+
+watch(() => salesObj.date, (newDate) => {
+  salesObj.dueDates = salesStore.generateDueDates(newDate);
 });
 
 function salesSubmit() {
@@ -20,9 +25,9 @@ function salesSubmit() {
 
 <template>
   <h4 class="mb-3">Add Sales</h4>
-  <form>
+  <form @submit.prevent="salesSubmit">
     <div class="row">
-      <div class="col-12 mb-3">
+      <div class="col-md-6 mb-3">
         <label for="name" class="mb-1">Name</label>
         <input 
           type="text" id="name" class="form-control"   
@@ -30,7 +35,7 @@ function salesSubmit() {
           required 
         />
       </div>
-      <div class="col-6 mb-3">
+      <div class="col-md-3 mb-3">
         <label for="date" class="mb-1">Date</label>
         <input 
           type="date" id="date" class="form-control"  
@@ -38,7 +43,7 @@ function salesSubmit() {
           required
         />
       </div>
-      <div class="col-6 mb-3">
+      <div class="col-md-3 mb-3">
         <label for="number-of-cards" class="mb-1">Number of cards</label>
         <input 
           type="number" id="number-of-cards" class="form-control" 
@@ -47,7 +52,7 @@ function salesSubmit() {
         />
       </div>
       <div class="col-12">
-        <button type="submit" class="btn btn-primary" @click.prevent="salesSubmit">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
       </div>
     </div>
   </form>
