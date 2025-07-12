@@ -8,8 +8,12 @@ const salesStore = useSalesStore();
 </script>
 
 <template>
-  <h1>Installment Management System</h1>
-  
-  <AddSalesForm />
-  <SalesTable :salesList="salesStore.salesList" />
+  <div class="row">
+    <div class="col-md-5">
+      <AddSalesForm />
+    </div>
+    <div class="col-md-7">
+      <SalesTable :sales="salesStore.sales" />
+    </div>
+  </div>
 </template>
