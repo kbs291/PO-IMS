@@ -27,5 +27,5 @@ defineProps({
         <td></td>
       </tr>
     </tbody>
-</table>
+  </table>
 </template>

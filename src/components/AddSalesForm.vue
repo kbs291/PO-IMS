@@ -1,16 +1,16 @@
 <script setup>
 import { reactive } from 'vue';
-import SalesTable from './SalesTable.vue';
+import { useSalesStore } from '@/stores/sales';
 
+const salesStore = useSalesStore();
 const salesObj = reactive({
   name: '',
   date: '',
   numberOfCards: '',
 });
-const salesList = reactive([]);
 
 function salesSubmit() {
-  salesList.push({ ...salesObj });
+  salesStore.addSales({ ...salesObj });
   salesObj.name = '';
   salesObj.date = '';
   salesObj.numberOfCards = '';
@@ -49,6 +49,4 @@ function salesSubmit() {
       </div>
     </div>
   </form>
-
-  <SalesTable :salesList="salesList" />
 </template>
