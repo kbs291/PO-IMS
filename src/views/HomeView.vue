@@ -6,6 +6,7 @@ import AddSalesForm from '@/components/AddSalesForm.vue';
 import SalesTable from '@/components/SalesTable.vue';
 
 const salesStore = useSalesStore();
+
 // temporary sales data
 const salesTemp = reactive([
   {
@@ -22,14 +23,12 @@ const salesTemp = reactive([
   },
   {
     name: 'Alex',
-    date: getFormattedDate(new Date("2025-06-29")),
+    date: getFormattedDate(new Date("2025-06-30")),
     numberOfCards: 1,
-    dueDates: salesStore.generateDueDates(getFormattedDate(new Date("2025-06-29"))),
+    dueDates: salesStore.generateDueDates(getFormattedDate(new Date("2025-06-30"))),
   },
 ]);
-
 salesTemp.forEach((sale) => salesStore.addSales(sale));
-
 
 </script>
 
