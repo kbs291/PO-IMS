@@ -1,5 +1,6 @@
 <script setup>
 import { reactive } from 'vue';
+import SalesTable from './SalesTable.vue';
 
 const salesObj = reactive({
   name: '',
@@ -48,4 +49,6 @@ function salesSubmit() {
       </div>
     </div>
   </form>
+
+  <SalesTable :salesList="salesList" />
 </template>

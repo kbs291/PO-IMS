@@ -4,5 +4,6 @@ import AddSalesForm from '@/components/AddSalesForm.vue';
 
 <template>
   <h1>Installment Management System</h1>
+  
   <AddSalesForm />
 </template>
