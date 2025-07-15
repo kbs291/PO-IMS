@@ -1,4 +1,4 @@
-export function getFormattedDate(date = new Date()) {
+export function formatDate(date = new Date()) {
   const year = date.getFullYear();
   let month = date.getMonth() + 1; // Month is 0-indexed
   let day = date.getDate();

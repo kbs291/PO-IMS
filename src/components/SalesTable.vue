@@ -1,6 +1,7 @@
 <script setup>
 import { defineProps } from 'vue';
-import { getFormattedDate } from '@/utils/formattedDate';
+import { formatDate } from '@/utils/formatDate';
+import { formatAmount } from '@/utils/formatAmount';
 
 defineProps({
   sales: {
@@ -29,13 +30,13 @@ defineProps({
           <tr v-for="(sale, index) in sales" :key="index">
             <td>{{ sale.name }}</td>
             <td>
-              <span class="d-inline-block border rounded-pill p-2 px-3">{{ getFormattedDate(sale.purchaseDate) }}</span>
+              <span class="d-inline-block border rounded-pill p-2 px-3">{{ formatDate(sale.purchaseDate) }}</span>
             </td>
             <td>{{ sale.numberOfCards }}</td>
             <td>
-              <span class="d-inline-block border rounded-pill p-2 px-3">{{ getFormattedDate(sale.firstDueDate) }}</span>
+              <span class="d-inline-block border rounded-pill p-2 px-3">{{ formatDate(sale.firstDueDate) }}</span>
             </td>
-            <td class="text-end">{{ sale.totalAmount.toLocaleString('en-US', { style: 'currency', currency: 'PHP' }) }}</td>
+            <td class="text-end">{{ formatAmount(sale.totalAmount) }}</td>
           </tr>
         </tbody>
       </table>

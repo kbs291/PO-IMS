@@ -1,19 +1,19 @@
 <script setup>
 import { reactive } from 'vue';
 import { useSalesStore } from '@/stores/sales';
-import { getFormattedDate } from '@/utils/formattedDate';
+import { formatDate } from '@/utils/formatDate';
 
 const salesStore = useSalesStore();
 const salesObj = reactive({
   name: '',
-  purchaseDate: getFormattedDate(),
+  purchaseDate: formatDate(),
   numberOfCards: 1,
 });
 
 function salesSubmit() {
   salesStore.addSales({ ...salesObj });
   salesObj.name = '';
-  salesObj.purchaseDate = getFormattedDate();
+  salesObj.purchaseDate = formatDate();
   salesObj.numberOfCards = 1;
 }
 </script>
