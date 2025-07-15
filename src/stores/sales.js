@@ -1,10 +1,28 @@
 import { reactive, ref } from "vue";
 import { defineStore } from "pinia";
+import axios from "axios";
 
 export const useSalesStore = defineStore('sales', () => {
-  const sales = reactive([]);
+  let sales = reactive([]);
 
-  function generateDueDates(purchaseDate) {
+  const fetchSales = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/sales');
+      response.data.forEach((data) => {
+        data.date = new Date(data.date);
+        data.dueDates = generateDueDates(data.date);
+        addSales(data);
+      });
+    } catch (error) {
+      console.log('Failed to fetch data');
+    }
+  }
+  
+  const addSales = (sale) => {
+    sales.push(sale);
+  }
+
+  const generateDueDates = (purchaseDate) => {
     const date = ref(new Date(purchaseDate));
     
     const day = date.value.getDate();
@@ -39,9 +57,5 @@ export const useSalesStore = defineStore('sales', () => {
     return dueDates;
   }
 
-  function addSales(sale) {
-    sales.push(sale);
-  }
-
-  return { sales, addSales, generateDueDates };
+  return { sales, fetchSales, addSales, generateDueDates };
 });

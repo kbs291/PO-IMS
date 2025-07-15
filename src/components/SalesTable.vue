@@ -27,7 +27,7 @@ defineProps({
         <tbody class="table-group-divider">
           <tr v-for="(sale, index) in sales" :key="index">
             <td>{{ sale.name }}</td>
-            <td>{{ sale.date }}</td>
+            <td>{{ getFormattedDate(sale.date) }}</td>
             <td>{{ sale.numberOfCards }}</td>
             <td>
               <span class="d-inline-block border rounded-pill p-2 px-3">{{ getFormattedDate(sale.dueDates.first) }}</span>

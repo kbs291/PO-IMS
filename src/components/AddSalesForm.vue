@@ -16,7 +16,7 @@ watch(() => salesObj.date, (newDate) => {
 });
 
 function salesSubmit() {
-  salesStore.addSales({ ...salesObj });
+  salesStore.addSales({ ...salesObj, date: new Date(salesObj.date) });
   salesObj.name = '';
   salesObj.date = getFormattedDate();
   salesObj.numberOfCards = 1;

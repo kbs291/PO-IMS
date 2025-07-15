@@ -1,0 +1,22 @@
+{
+  "sales": [
+    {
+      "name": "Karen",
+      "date": "2025-03-18",
+      "numberOfCards": 2,
+      "dueDates": ""
+    },
+    {
+      "name": "Jane",
+      "date": "2025-04-07",
+      "numberOfCards": 3,
+      "dueDates": ""
+    },
+    {
+      "name": "Alex",
+      "date": "2025-06-30",
+      "numberOfCards": 1,
+      "dueDates": ""
+    }
+  ]
+}
