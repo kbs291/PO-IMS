@@ -1,22 +1,57 @@
 {
   "sales": [
     {
+      "id": 1,
       "name": "Karen",
-      "date": "2025-03-18",
+      "purchaseDate": "2025-03-18",
       "numberOfCards": 2,
-      "dueDates": ""
+      "totalAmount": 1000,
+      "numberOfInstallments": 4,
+      "firstDueDate": "2025-03-31"
     },
     {
+      "id": 2,
       "name": "Jane",
-      "date": "2025-04-07",
+      "purchaseDate": "2025-04-07",
       "numberOfCards": 3,
-      "dueDates": ""
+      "totalAmount": 1500,
+      "numberOfInstallments": 4,
+      "firstDueDate": "2025-04-15"
     },
     {
+      "id": 3,
       "name": "Alex",
-      "date": "2025-06-30",
+      "purchaseDate": "2025-06-30",
       "numberOfCards": 1,
-      "dueDates": ""
+      "totalAmount": 500,
+      "numberOfInstallments": 4,
+      "firstDueDate": "2025-07-15"
+    }
+  ],
+  "installments": [
+    {
+      "id": 1,
+      "saleId": 1
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "firstName": "John",
+      "lastName": "Doe",
+      "contactNumber": "123-456-7890"
+    },
+    {
+      "id": 2,
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "contactNumber": "123-456-7890"
+    },
+    {
+      "id": 3,
+      "firstName": "Jay",
+      "lastName": "Doe",
+      "contactNumber": "123-456-7890"
     }
   ]
 }

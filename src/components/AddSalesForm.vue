@@ -1,24 +1,19 @@
 <script setup>
-import { reactive, watch } from 'vue';
+import { reactive } from 'vue';
 import { useSalesStore } from '@/stores/sales';
 import { getFormattedDate } from '@/utils/formattedDate';
 
 const salesStore = useSalesStore();
 const salesObj = reactive({
   name: '',
-  date: getFormattedDate(),
+  purchaseDate: getFormattedDate(),
   numberOfCards: 1,
-  dueDates: salesStore.generateDueDates(getFormattedDate()),
-});
-
-watch(() => salesObj.date, (newDate) => {
-  salesObj.dueDates = salesStore.generateDueDates(newDate);
 });
 
 function salesSubmit() {
-  salesStore.addSales({ ...salesObj, date: new Date(salesObj.date) });
+  salesStore.addSales({ ...salesObj });
   salesObj.name = '';
-  salesObj.date = getFormattedDate();
+  salesObj.purchaseDate = getFormattedDate();
   salesObj.numberOfCards = 1;
 }
 </script>
@@ -36,10 +31,10 @@ function salesSubmit() {
         />
       </div>
       <div class="col-md-3 mb-3">
-        <label for="date" class="mb-1">Date</label>
+        <label for="date" class="mb-1">Purchase Date</label>
         <input 
           type="date" id="date" class="form-control"  
-          v-model="salesObj.date" 
+          v-model="salesObj.purchaseDate" 
           required
         />
       </div>
