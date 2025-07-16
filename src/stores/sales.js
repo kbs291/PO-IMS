@@ -6,7 +6,7 @@ import axios from "axios";
 
 export const useSalesStore = defineStore('sales', () => {
   const installmentsStore = useInstallmentsStore();
-  let sales = reactive([]);
+  const sales = reactive([]);
 
   const fetchSales = async () => {
     try {

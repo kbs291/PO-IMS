@@ -1,10 +1,10 @@
 import axios from "axios";
 import { defineStore } from "pinia";
-import { reactive, ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { generateDueDates } from "@/utils/generateDueDates";
 
 export const useInstallmentsStore = defineStore('installments', () => {
-  let installments = reactive([]);
+  const installments = reactive([]);
   
   const fetchInstallments = async () => {
     try {
@@ -13,7 +13,11 @@ export const useInstallmentsStore = defineStore('installments', () => {
         const dataExists = installments.find(installment => installment.id === data.id);
         
         if (dataExists) {
-          addInstallments(data);
+          /**
+           * Assumption: 
+           * - Data structure from the API is the same as
+           *   the createInstallment()  */ 
+          installments.push(data);
         }
       });
     } catch (error) {
@@ -21,55 +25,60 @@ export const useInstallmentsStore = defineStore('installments', () => {
     }
   };
 
-  const addInstallments = (installment) => {
-    const purchaseDate = ref(new Date(installment.purchaseDate));
-    const dueDates = reactive({
-      first: new Date(installment.dueDates.first),
-      second: new Date(installment.dueDates.second),
-      third: new Date(installment.dueDates.third),
-      fourth: new Date(installment.dueDates.fourth)
-    });
-    const paymentDates = reactive({
-      first: installment.paymentDates.first ? new Date(installment.paymentDates.first) : null,
-      second: installment.paymentDates.second ? new Date(installment.paymentDates.second) : null,
-      third: installment.paymentDates.third ? new Date(installment.paymentDates.third) : null,
-      fourth: installment.paymentDates.fourth ? new Date(installment.paymentDates.fourth) : null
+  const getInstallments = computed(() => {
+    const newInstallments = reactive([]);
+    const newArray = Map.groupBy(installments, installment => installment.saleId);
+    
+    newArray.forEach((arr) => {
+      arr.sort((a, b) => { return new Date(a.dueDate) - new Date(b.dueDate) })
     });
 
-    installments.push({ ...installment, purchaseDate, dueDates, paymentDates });
-  };
+    newArray.forEach((value, key) => {
+      let installmentObj = reactive({});
+      const id = key;
+      const keyIndex = [ 'first', 'second', 'third', 'fourth' ];
+
+      const dueDate = reactive({});
+      const status = reactive({});
+      const amountDue = reactive({});
+      const paymentDate = reactive({});
+      const installmentId = reactive({});
+
+      value.forEach((element, index) => {
+        dueDate[keyIndex[index]] = element.dueDate;
+        status[keyIndex[index]] = element.status;
+        amountDue[keyIndex[index]] = element.amountDue;
+        paymentDate[keyIndex[index]] = element.paymentDate;
+        installmentId[keyIndex[index]] = element.id;
+        installmentObj = { ...element }
+      });
+      newInstallments.push({ ...installmentObj, id, dueDate, status, amountDue, paymentDate, installmentId });
+    });
+
+    return newInstallments;
+  });
 
   const createInstallment = (sale) => {
-    const amountDue = sale.totalAmount / 4;
-    const installmentObj = reactive({
-      id: installments.length + 1,
-      salesId: sale.id,
-      name: sale.name,
-      purchaseDate: new Date(sale.purchaseDate),
-      numberOfCards: sale.numberOfCards,
-      amountDue: {
-        first: amountDue,
-        second: amountDue,
-        third: amountDue,
-        fourth: amountDue
-      },
-      dueDates: generateDueDates(sale.purchaseDate),
-      status: {
-        first: 'pending',
-        second: 'pending',
-        third: 'pending',
-        fourth: 'pending',
-      },
-      paymentDates: {
-        first: '',
-        second: '',
-        third: '',
-        fourth: ''
-      }
-    });
+    const dueDates = generateDueDates(sale.purchaseDate);
+    const dateParams = ['first', 'second', 'third', 'fourth'];
+    let count = 0;
 
-    addInstallments(installmentObj);
+    while (count < sale.numberOfInstallments) {
+      const installmentObj = {
+        id: installments.length + 1,
+        saleId: sale.id,
+        name: sale.name,
+        purchaseDate: sale.purchaseDate,
+        numberOfCards: sale.numberOfCards,
+        dueDate: dueDates[dateParams[count]],
+        amountDue: sale.totalAmount / sale.numberOfInstallments,
+        status: 'pending',
+        paymentDate: null
+      }
+      installments.push({ ...installmentObj });
+      count++;
+    }
   }
 
-  return { installments, fetchInstallments, addInstallments, createInstallment };
+  return { installments, getInstallments, fetchInstallments, createInstallment };
 });

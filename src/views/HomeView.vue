@@ -8,13 +8,10 @@ import SalesTable from '@/components/SalesTable.vue';
 const salesStore = useSalesStore();
 const { sales } = storeToRefs(salesStore);
 
-onMounted(async () => {
-  await salesStore.fetchSales();
-});
+onMounted(async () => await salesStore.fetchSales());
 </script>
 
 <template>
-  
   <div class="row">
     <div class="col-12 mb-5">
       <AddSalesForm />
