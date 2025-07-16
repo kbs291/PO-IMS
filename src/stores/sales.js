@@ -12,9 +12,13 @@ export const useSalesStore = defineStore('sales', () => {
     try {
       const response = await axios.get('http://localhost:3000/sales');
       response.data.forEach((data) => {
+        const dataExists =  sales.find(sale => sale.id === data.id)
         data.purchaseDate = new Date(data.purchaseDate);
         data.firstDueDate = new Date(data.firstDueDate);
-        addSales(data);
+        
+        if (!dataExists) {
+          addSales(data);
+        }
       });
     } catch (error) {
       console.log('Failed to fetch data');

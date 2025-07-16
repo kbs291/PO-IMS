@@ -10,7 +10,11 @@ export const useInstallmentsStore = defineStore('installments', () => {
     try {
       const response = await axios.get('http://localhost:3000/installments');
       response.data.forEach(data => {
-        addInstallments(data);
+        const dataExists = installments.find(installment => installment.id === data.id);
+        
+        if (dataExists) {
+          addInstallments(data);
+        }
       });
     } catch (error) {
       console.log('Failed to fetch data');
