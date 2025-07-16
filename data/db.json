@@ -28,70 +28,7 @@
       "firstDueDate": "2025-07-15"
     }
   ],
-  "installments": [
-    {
-      "id": 1,
-      "salesId": 1,
-      "name": "Karen",
-      "purchaseDate": "2025-07-16",
-      "numberOfCards": 1,
-      "amountDue": {
-        "first": 125,
-        "second": 125,
-        "third": 125,
-        "fourth": 125
-      },
-      "dueDates": {
-        "first": "2025-07-16",
-        "second": "2025-07-16",
-        "third": "2025-07-16",
-        "fourth": "2025-07-16"
-      },
-      "status": {
-        "first": "pending",
-        "second": "pending",
-        "third": "pending",
-        "fourth": "pending"
-      },
-      "paymentDates": {
-        "first": "2025-07-16",
-        "second": "2025-07-16",
-        "third": "2025-07-16",
-        "fourth": "2025-07-16"
-      }
-    },
-    {
-      "id": 1,
-      "salesId": 1,
-      "name": "John",
-      "purchaseDate": "2025-07-16",
-      "numberOfCards": 2,
-      "amountDue": {
-        "first": 250,
-        "second": 250,
-        "third": 250,
-        "fourth": 250
-      },
-      "dueDates": {
-        "first": "2025-07-16",
-        "second": "2025-07-16",
-        "third": "2025-07-16",
-        "fourth": "2025-07-16"
-      },
-      "status": {
-        "first": "pending",
-        "second": "pending",
-        "third": "pending",
-        "fourth": "pending"
-      },
-      "paymentDates": {
-        "first": "2025-07-16",
-        "second": "2025-07-16",
-        "third": "2025-07-16",
-        "fourth": "2025-07-16"
-      }
-    }
-  ],
+  "installments": [],
   "customers": [
     {
       "id": 1,

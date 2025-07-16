@@ -1,6 +1,7 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
+import { generateDueDates } from "@/utils/generateDueDates";
 
 export const useInstallmentsStore = defineStore('installments', () => {
   let installments = reactive([]);
@@ -12,7 +13,7 @@ export const useInstallmentsStore = defineStore('installments', () => {
         addInstallments(data);
       });
     } catch (error) {
-      console.log(error);
+      console.log('Failed to fetch data');
     }
   };
 
@@ -25,14 +26,46 @@ export const useInstallmentsStore = defineStore('installments', () => {
       fourth: new Date(installment.dueDates.fourth)
     });
     const paymentDates = reactive({
-      first: new Date(installment.paymentDates.first),
-      second: new Date(installment.paymentDates.second),
-      third: new Date(installment.paymentDates.third),
-      fourth: new Date(installment.paymentDates.fourth)
+      first: installment.paymentDates.first ? new Date(installment.paymentDates.first) : null,
+      second: installment.paymentDates.second ? new Date(installment.paymentDates.second) : null,
+      third: installment.paymentDates.third ? new Date(installment.paymentDates.third) : null,
+      fourth: installment.paymentDates.fourth ? new Date(installment.paymentDates.fourth) : null
     });
 
     installments.push({ ...installment, purchaseDate, dueDates, paymentDates });
   };
 
-  return { installments, fetchInstallments, addInstallments };
+  const createInstallment = (sale) => {
+    const amountDue = sale.totalAmount / 4;
+    const installmentObj = reactive({
+      id: installments.length + 1,
+      salesId: sale.id,
+      name: sale.name,
+      purchaseDate: new Date(sale.purchaseDate),
+      numberOfCards: sale.numberOfCards,
+      amountDue: {
+        first: amountDue,
+        second: amountDue,
+        third: amountDue,
+        fourth: amountDue
+      },
+      dueDates: generateDueDates(sale.purchaseDate),
+      status: {
+        first: 'pending',
+        second: 'pending',
+        third: 'pending',
+        fourth: 'pending',
+      },
+      paymentDates: {
+        first: '',
+        second: '',
+        third: '',
+        fourth: ''
+      }
+    });
+
+    addInstallments(installmentObj);
+  }
+
+  return { installments, fetchInstallments, addInstallments, createInstallment };
 });
