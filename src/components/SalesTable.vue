@@ -1,24 +1,28 @@
 <script setup>
-import { defineProps, ref } from 'vue';
+import { computed, defineProps, ref } from 'vue';
 import { formatDate } from '@/utils/formatDate';
 import { formatAmount } from '@/utils/formatAmount';
 import { calculateTotal } from '@/utils/calculateTotal';
 
+const month = ref(formatDate(new Date(), 'm-y'));
+const tab = ref('all');
 const props = defineProps({
   sales: {
     type: Array,
     required: true,
   },
 });
-const month = ref(formatDate(new Date(), 'm-y'));
-const salesData = props.sales;
 
-
-const filterSales = () => {
-  console.log(month.value);
-  salesData.pop()
-}
-
+const getSales = computed(() => {
+  const date = new Date(month.value);
+  if (tab.value === 'month') {
+    return props.sales.filter(sale => {
+      const saleDate = new Date(sale.purchaseDate);
+      return saleDate.getMonth() === date.getMonth() && saleDate.getFullYear() === date.getFullYear();
+    });
+  }
+  return props.sales;
+})
 </script>
 
 <template>
@@ -26,15 +30,15 @@ const filterSales = () => {
     <h4 class="m-0">PO Card Sales</h4>
     <nav>
       <div class="nav nav-tabs justify-content-end border-0" id="nav-tab" role="tablist">
-        <button class="nav-link border-0 active" id="nav-all-tab" data-bs-toggle="tab" data-bs-target="#nav-all" type="button" role="tab" aria-controls="nav-all" aria-selected="true">All</button>
-        <button class="nav-link border-0" id="nav-due-dates-tab" data-bs-toggle="tab" data-bs-target="#nav-due-dates" type="button" role="tab" aria-controls="nav-due-dates" aria-selected="false">By Month</button>
+        <button class="nav-link border-0 active" id="nav-all-tab" data-bs-toggle="tab" data-bs-target="#nav-all" type="button" role="tab" aria-controls="nav-all" aria-selected="true" @click="tab = 'all'">All</button>
+        <button class="nav-link border-0" id="nav-due-dates-tab" data-bs-toggle="tab" data-bs-target="#nav-due-dates" type="button" role="tab" aria-controls="nav-due-dates" aria-selected="false" @click="tab = 'month'">By Month</button>
       </div>
     </nav>
   </div>
 
   <div class="tab-content" id="nav-tabContent">
     <div class="tab-pane fade show active" id="nav-all" role="tabpanel" aria-labelledby="nav-all-tab" tabindex="0">
-      <div class="table-responsive" v-if="sales.length > 0">
+      <div class="table-responsive" v-if="getSales.length > 0">
         <table class="table table-hover align-middle mt-4">
           <thead>
             <tr>
@@ -46,7 +50,7 @@ const filterSales = () => {
             </tr>
           </thead>
           <tbody class="table-group-divider">
-            <tr v-for="sale in salesData" :key="sale.id">
+            <tr v-for="sale in getSales" :key="sale.id">
               <td>{{ sale.id }}</td>
               <td>{{ sale.name }}</td>
               <td>{{ formatDate(sale.purchaseDate) }}</td>
@@ -57,7 +61,7 @@ const filterSales = () => {
           <tfoot>
             <tr>
               <td colspan="4">&nbsp;</td>
-              <td class="text-end">{{ formatAmount(calculateTotal(sales, 'totalAmount')) }}</td>
+              <td class="text-end">{{ formatAmount(calculateTotal(getSales, 'totalAmount')) }}</td>
             </tr>
           </tfoot>
         </table>
@@ -66,11 +70,11 @@ const filterSales = () => {
     </div>
 
     <div class="tab-pane fade" id="nav-due-dates" role="tabpanel" aria-labelledby="nav-due-dates-tab" tabindex="0">
-      <div class="d-flex justify-content-end mt-3">
-        <input type="month" v-model="month" @change="filterSales(month)">
+      <div class="d-flex justify-content-end mt-3 mb-2">
+        <input type="month" v-model="month">
       </div>
 
-      <div class="table-responsive" v-if="sales.length > 0">
+      <div class="table-responsive" v-if="getSales.length > 0">
         <table class="table table-hover align-middle mt-2">
           <thead>
             <tr>
@@ -82,7 +86,7 @@ const filterSales = () => {
             </tr>
           </thead>
           <tbody class="table-group-divider">
-            <tr v-for="sale in salesData" :key="sale.id">
+            <tr v-for="sale in getSales" :key="sale.id">
               <td>{{ sale.id }}</td>
               <td>{{ sale.name }}</td>
               <td>{{ formatDate(sale.purchaseDate) }}</td>
@@ -93,7 +97,7 @@ const filterSales = () => {
           <tfoot>
             <tr>
               <td colspan="4">&nbsp;</td>
-              <td class="text-end">{{ formatAmount(calculateTotal(sales, 'totalAmount')) }}</td>
+              <td class="text-end">{{ formatAmount(calculateTotal(getSales, 'totalAmount')) }}</td>
             </tr>
           </tfoot>
         </table>
@@ -102,3 +106,9 @@ const filterSales = () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+.nav-link {
+  color: var(--bs-secondary);
+}
+</style>
