@@ -19,7 +19,7 @@ function salesSubmit() {
 </script>
 
 <template>
-  <h4 class="mb-3">Add Sales</h4>
+  <h4 class="mb-3">Add PO Card Sales</h4>
   <form @submit.prevent="salesSubmit">
     <div class="row">
       <div class="col-md-6 mb-3">
