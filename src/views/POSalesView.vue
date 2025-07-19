@@ -3,7 +3,7 @@ import { onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSalesStore } from '@/stores/sales';
 import AddSalesForm from '@/components/AddSalesForm.vue';
-import SalesTable from '@/components/SalesTable.vue';
+import POSalesTable from '@/components/POSalesTable.vue';
 
 const salesStore = useSalesStore();
 const { sales } = storeToRefs(salesStore);
@@ -17,7 +17,7 @@ onMounted(async () => await salesStore.fetchSales());
       <AddSalesForm />
     </div>
     <div class="col-12 mt-3">
-      <SalesTable :sales="sales" />
+      <POSalesTable :sales="sales" />
     </div>
   </div>
 </template>
