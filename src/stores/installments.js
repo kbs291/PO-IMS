@@ -1,6 +1,6 @@
 import axios from "axios";
 import { defineStore } from "pinia";
-import { computed, reactive, ref } from "vue";
+import { reactive } from "vue";
 import { generateDueDates } from "@/utils/generateDueDates";
 
 export const useInstallmentsStore = defineStore('installments', () => {
@@ -25,39 +25,6 @@ export const useInstallmentsStore = defineStore('installments', () => {
     }
   };
 
-  const getInstallments = computed(() => {
-    const newInstallments = reactive([]);
-    const newArray = Map.groupBy(installments, installment => installment.saleId);
-    
-    newArray.forEach((arr) => {
-      arr.sort((a, b) => { return new Date(a.dueDate) - new Date(b.dueDate) })
-    });
-
-    newArray.forEach((value, key) => {
-      let installmentObj = reactive({});
-      const id = key;
-      const keyIndex = [ 'first', 'second', 'third', 'fourth' ];
-
-      const dueDate = reactive({});
-      const status = reactive({});
-      const amountDue = reactive({});
-      const paymentDate = reactive({});
-      const installmentId = reactive({});
-
-      value.forEach((element, index) => {
-        dueDate[keyIndex[index]] = element.dueDate;
-        status[keyIndex[index]] = element.status;
-        amountDue[keyIndex[index]] = element.amountDue;
-        paymentDate[keyIndex[index]] = element.paymentDate;
-        installmentId[keyIndex[index]] = element.id;
-        installmentObj = { ...element }
-      });
-      newInstallments.push({ ...installmentObj, id, dueDate, status, amountDue, paymentDate, installmentId });
-    });
-
-    return newInstallments;
-  });
-
   const createInstallment = (sale) => {
     const dueDates = generateDueDates(sale.purchaseDate);
     const dateParams = ['first', 'second', 'third', 'fourth'];
@@ -80,5 +47,5 @@ export const useInstallmentsStore = defineStore('installments', () => {
     }
   }
 
-  return { installments, getInstallments, fetchInstallments, createInstallment };
+  return { installments, fetchInstallments, createInstallment };
 });
