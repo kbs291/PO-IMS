@@ -19,35 +19,35 @@ function salesSubmit() {
 </script>
 
 <template>
-  <h4 class="mb-3">Add PO Card Sales</h4>
+  <h4>Add PO Card Sales</h4>
   <form @submit.prevent="salesSubmit">
-    <div class="row">
-      <div class="col-md-6 mb-3">
-        <label for="name" class="mb-1">Name</label>
+    <div>
+      <div>
+        <label for="name">Name</label>
         <input 
-          type="text" id="name" class="form-control"   
+          type="text" id="name"   
           v-model="salesObj.name" 
           required 
         />
       </div>
-      <div class="col-md-3 mb-3">
-        <label for="date" class="mb-1">Purchase Date</label>
+      <div>
+        <label for="date">Purchase Date</label>
         <input 
-          type="date" id="date" class="form-control"  
+          type="date" id="date"  
           v-model="salesObj.purchaseDate" 
           required
         />
       </div>
-      <div class="col-md-3 mb-3">
-        <label for="number-of-cards" class="mb-1">Number of cards</label>
+      <div>
+        <label for="number-of-cards">Number of cards</label>
         <input 
-          type="number" id="number-of-cards" class="form-control" 
+          type="number" id="number-of-cards" 
           v-model="salesObj.numberOfCards" 
           required 
         />
       </div>
-      <div class="col-12">
-        <button type="submit" class="btn btn-primary">Submit</button>
+      <div>
+        <button type="submit">Submit</button>
       </div>
     </div>
   </form>

@@ -26,20 +26,20 @@ const getSales = computed(() => {
 </script>
 
 <template>
-  <div class="row">
-    <div class="col-12 mb-5">
+  <div>
+    <div>
       <AddSalesForm />
     </div>
-    <div class="col-12 mt-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <h4 class="m-0">PO Card Sales</h4>
+    <div>
+      <div>
+        <h4>PO Card Sales</h4>
         <div class="btn-group">
-          <button type="button" class="border-0" :class="{ 'active': tab === 'all' }" @click="tab = 'all'">All</button>
-          <button type="button" class="border-0" :class="{ 'active': tab === 'month' }" @click="tab = 'month'">By Month</button>
+          <button type="button":class="{ 'active': tab === 'all' }" @click="tab = 'all'">All</button>
+          <button type="button" :class="{ 'active': tab === 'month' }" @click="tab = 'month'">By Month</button>
         </div>
       </div>
 
-      <div class="d-flex justify-content-end mt-4 mb-2" v-if="tab === 'month'">
+      <div v-if="tab === 'month'">
         <input type="month" v-model="month" />
       </div>
       <POSalesTable :sales="getSales" />
