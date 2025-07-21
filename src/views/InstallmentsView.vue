@@ -82,16 +82,16 @@ const installmentsArray = computed(() => {
 </script>
 
 <template>
-  <div class="d-flex justify-content-between align-items-center">
-    <h4 class="my-3">Installments</h4>
+  <div>
+    <h4>Installments</h4>
     <div class="btn-group">
-      <button type="button" class="border-0" :class="{ 'active': tab === 'all' }" @click="tab = 'all'">All</button>
-      <button type="button" class="border-0" :class="{ 'active': tab === 'upcoming' }" @click="tab = 'upcoming'">Upcoming</button>
-      <button type="button" class="border-0" :class="{ 'active': tab === 'due date' }" @click="tab = 'due date'">By Due Date</button>
+      <button type="button" :class="{ 'active': tab === 'all' }" @click="tab = 'all'">All</button>
+      <button type="button" :class="{ 'active': tab === 'upcoming' }" @click="tab = 'upcoming'">Upcoming</button>
+      <button type="button" :class="{ 'active': tab === 'due date' }" @click="tab = 'due date'">By Due Date</button>
     </div>
   </div>
 
-  <div class="d-flex justify-content-end mt-4 mb-2" v-if="tab === 'due date'">
+  <div v-if="tab === 'due date'">
     <input type="date" v-model="datePicker">
   </div>
   <InstallmentsTable :installments="installmentsArray" :tab="tab" />
