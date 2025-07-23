@@ -1,26 +1,31 @@
+import AppLayout from '@/layout/AppLayout.vue'
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import POSalesView from '@/views/POSalesView.vue'
-import InstallmentsView from '@/views/InstallmentsView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: HomeView
+      component: AppLayout,
+      children: [
+        {
+          path: '/',
+          name: 'dashboard',
+          component: () => import('@/views/Dashboard.vue')
+        },
+        {
+          path: '/po-sales',
+          name: 'posales',
+          component: () => import('@/views/POSalesView.vue')
+        },
+        {
+          path: '/installments',
+          name: 'installments',
+          component: () => import('@/views/InstallmentsView.vue')
+        },
+      ]
     },
-    {
-      path: '/po-sales',
-      name: 'posales',
-      component: POSalesView
-    },
-    {
-      path: '/installments',
-      name: 'installments',
-      component: InstallmentsView
-    },
+    
     // {
     //   path: '/about',
     //   name: 'about',
