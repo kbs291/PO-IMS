@@ -7,33 +7,35 @@
   background-color: var(--surface-card);
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 2rem;
 
-  .layout-topbar-logo-container {
+  .layout-topbar-logo-container, 
+  .layout-topbar-menu {
     display: flex;
     align-items: center;
     gap: 1rem;
+  }
 
-    .layout-menu-button {
-      display: inline-flex;
-      justify-content: center;
-      align-items: center;
-      border-radius: 50%;
-      width: 2.5rem;
-      height: 2.5rem;
-      background-color: transparent;
-      border: none;
-      color: var(--p-text-color);
-      transition: background-color var(--element-transition-duration);
-      cursor: pointer;
+  .layout-topbar-action {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: transparent;
+    border: none;
+    color: var(--p-text-color);
+    transition: background-color var(--element-transition-duration);
+    cursor: pointer;
 
-      &:hover {
-          background-color: var(--surface-hover);
-      }
+    &:hover {
+        background-color: var(--surface-hover);
+    }
 
-      i {
-        font-size: 1.25rem;
-      }
+    i {
+      font-size: 1.25rem;
     }
   }
 }
