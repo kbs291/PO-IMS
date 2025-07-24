@@ -21,25 +21,5 @@ import { RouterLink } from 'vue-router';
         <i class="pi pi-user"></i>
       </button>
     </div>
-    
   </div>
-
-  <nav>
-    <div>
-      <h1>Purchase Order IMS</h1>
-      <div>
-        <ul>
-          <li>
-            <RouterLink to="/">Home</RouterLink>
-          </li>
-          <li>
-            <RouterLink :to="{ name: 'posales' }">PO Sales</RouterLink>
-          </li>
-          <li>
-            <RouterLink :to="{ name: 'installments' }">Installments</RouterLink>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
 </template>
