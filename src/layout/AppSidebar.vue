@@ -1,16 +1,15 @@
 <script setup>
-import Menu from 'primevue/menu';
-import { reactive } from 'vue';
-import { RouterLink } from 'vue-router';
+import Menu from 'primevue/menu'
+import { computed } from 'vue'
 
-const items = reactive([
+const items = computed(() => [
   { 
     label: 'Home', 
     items: [
       { 
         label: 'Dashboard', 
         icon: 'pi pi-fw pi-home', 
-        route: 'dashboard' 
+        to: { name: 'dashboard' }
       } 
     ]
   },
@@ -18,18 +17,18 @@ const items = reactive([
     label: 'Transactions',
     items: [
       { 
-        label: 'Sales', 
+        label: 'PO Sales', 
         icon: 'pi pi-fw pi-chart-line', 
-        route: 'posales' 
+        to: { name: 'posales' }
       },
       { 
         label: 'Installments', 
         icon: 'pi pi-fw pi-calendar-clock', 
-        route: 'installments' 
+        to: { name: 'installments' }
       }
     ]
   }
-]);
+])
 </script>
 
 <template>
@@ -38,17 +37,14 @@ const items = reactive([
       <template #submenulabel="{ item }">
         <span>{{ item.label }}</span>
       </template>
+
       <template #item="{ item, props }">
-        <RouterLink v-if="item.route" v-slot="{ href, navigate }" :to="{ name: item.route }" custom>
-          <a v-ripple :href="href" v-bind="props.action" @click="navigate">
-            <span :class="item.icon" />
+        <router-link v-if="item.to" v-slot="{ href, navigate, isExactActive }" :to="item.to" custom>
+          <a :href="href" v-bind="props.action" @click="navigate" :class="{ 'active-route': isExactActive }">
+            <span :class="item.icon"></span>
             <span>{{ item.label }}</span>
           </a>
-        </RouterLink>
-        <a v-else v-ripple :href="item.url" :target="item.target" v-bind="props.action">
-          <span :class="item.icon" />
-          <span>{{ item.label }}</span>
-        </a>
+        </router-link>
       </template>
     </Menu>
   </div>

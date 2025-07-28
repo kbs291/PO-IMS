@@ -4,7 +4,7 @@ import { formatDate } from '@/utils/formatDate';
 import { useInstallmentsStore } from '@/stores/installments';
 import { useSalesStore } from '@/stores/sales';
 import { storeToRefs } from 'pinia';
-import InstallmentsTable from '@/components/InstallmentsTable.vue';
+import InstallmentsTable from '@/components/table/InstallmentsTable.vue';
 
 const installmentsStore = useInstallmentsStore();
 const salesStore = useSalesStore();

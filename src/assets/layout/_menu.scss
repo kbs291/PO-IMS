@@ -1,0 +1,27 @@
+.p-menu {
+  padding: 0.5rem 1.5rem;
+
+  .p-menu-submenu-label, 
+  .p-menu-item {
+    color: var(--text-color);
+  }
+
+  .p-menu-submenu-label {
+    text-transform: uppercase;
+  }
+  
+  .p-menu-item {
+    &.p-focus .p-menu-item-content {
+        background: none;
+    }
+
+    .p-menu-item-link {
+      padding: 0.75rem 1rem 0.75rem 1.5rem;
+      
+      &.active-route {
+        font-weight: 700;
+        color: var(--primary-color);
+      }
+    }
+  }
+}

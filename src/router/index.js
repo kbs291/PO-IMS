@@ -16,7 +16,7 @@ const router = createRouter({
         {
           path: '/po-sales',
           name: 'posales',
-          component: () => import('@/views/POSalesView.vue')
+          component: () => import('@/views/pages/POSales.vue')
         },
         {
           path: '/installments',
