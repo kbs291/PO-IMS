@@ -1,4 +1,5 @@
 <script setup>
+import DynamicDialog from 'primevue/dynamicdialog';
 import AppTopbar from './AppTopbar.vue';
 import AppSidebar from './AppSidebar.vue';
 </script>
@@ -12,5 +13,6 @@ import AppSidebar from './AppSidebar.vue';
         <router-view />
       </div>
     </div>
+    <DynamicDialog />
   </div>
 </template>

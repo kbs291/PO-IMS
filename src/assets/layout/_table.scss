@@ -1,0 +1,19 @@
+.custom-table-header {
+  display: flex;
+  justify-content: space-between;
+
+  .global-filter-container {
+    display: flex;
+    gap: 0.5rem;
+  }
+}
+
+.custom-date-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.empty-data, .loading-data {
+  text-align: center;
+}

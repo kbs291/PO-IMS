@@ -1,5 +1,4 @@
 <script setup>
-import Menu from 'primevue/menu'
 import { computed } from 'vue'
 
 const items = computed(() => [
