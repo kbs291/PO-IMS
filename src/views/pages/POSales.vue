@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia';
 import { useSalesStore } from '@/stores/sales';
 import { formatDate } from '@/utils/formatDate';
 import AddSalesForm from '@/components/AddSalesForm.vue';
-import POSalesTable from '@/components/POSalesTable.vue';
+import POSalesTable from '@/components/table/POSalesTable.vue';
 
 const month = ref(formatDate(new Date(), 'm-y'));
 const tab = ref('all');
@@ -26,18 +26,18 @@ const getSales = computed(() => {
 </script>
 
 <template>
-  <div>
-    <div>
+  <div class="card">
+    <div class="card-title">PO Card Sales</div>
+    <!-- <div>
       <AddSalesForm />
-    </div>
+    </div> -->
     <div>
-      <div>
-        <h4>PO Card Sales</h4>
+      <!-- <div>
         <div class="btn-group">
           <button type="button":class="{ 'active': tab === 'all' }" @click="tab = 'all'">All</button>
           <button type="button" :class="{ 'active': tab === 'month' }" @click="tab = 'month'">By Month</button>
         </div>
-      </div>
+      </div> -->
 
       <div v-if="tab === 'month'">
         <input type="month" v-model="month" />
