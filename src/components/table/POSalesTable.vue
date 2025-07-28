@@ -1,9 +1,9 @@
 <script setup>
-import DataTable from 'primevue/datatable';
-import Column from 'primevue/column';
-import { defineProps } from 'vue';
+import { computed, ref, onBeforeMount, watch, defineAsyncComponent, onMounted } from 'vue';
 import { formatAmount } from '@/utils/formatAmount';
-import { calculateTotal } from '@/utils/calculateTotal';
+import { useDialog } from 'primevue/usedialog';
+import { FilterOperator, FilterMatchMode, FilterService } from '@primevue/core/api';
+import AddSalesForm from '@/components/AddSalesForm.vue';
 
 const props = defineProps({
   sales: {
@@ -11,6 +11,99 @@ const props = defineProps({
     required: true,
   },
 });
+const loading = ref(true);
+const filters = ref(null);
+const filteredData = ref([]);
+const dialog = useDialog();
+const initFilters = () => {
+  filters.value = {
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    purchaseDate: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: 'monthIs' }] },
+  };
+};
+
+onBeforeMount(() => {
+  FilterService.register('monthIs', (value, filter) => {
+    if (filter === undefined || filter === null) {
+      return true;
+    }
+
+    if (value === undefined || value === null) {
+      return false;
+    }
+
+    const saleDate = new Date(value);
+    const filterDate = new Date(filter);
+
+    return saleDate.getMonth() === filterDate.getMonth() && saleDate.getFullYear() === filterDate.getFullYear();
+  });
+
+  FilterService.register('dateIsBetween', (value, filter) => {
+    if (filter === undefined || filter === null || !Array.isArray(filter) || filter.length !== 2 || filter[0] === null || filter[1] === null) {
+      return true;
+    }
+
+    if (value === undefined || value === null) {
+      return false;
+    }
+
+    const rowDate = new Date(value);
+    const startDate = new Date(filter[0]);
+    const endDate = new Date(filter[1]);
+    endDate.setHours(23, 59, 59, 999); // Make end date inclusive for the whole day
+
+    return rowDate >= startDate && rowDate <= endDate;
+  });
+
+  initFilters();
+});
+
+onMounted(() => {
+  loading.value = false;
+});
+
+// Watch for changes in the input 'sales' prop
+watch(() => props.sales, (newSales) => {
+  // When the base data changes, update our local copy.
+  // If filters are active, DataTable will emit a 'value-change' event,
+  // which will then update this ref with the filtered data.
+  // This ensures the footer is correct on initial load and when props change.
+  filteredData.value = newSales;
+}, { immediate: true });
+
+const onValueChange = (data) => (filteredData.value = data);
+
+const clearFilter = () => {
+    initFilters();
+};
+
+const totalSales = computed(() => {
+  let total = 0;
+
+  if (filteredData.value) {
+    for (const sale of filteredData.value) {
+      total += sale.totalAmount;
+    }
+  }
+
+  return total.toLocaleString('en-US', { style: 'currency', currency: 'PHP' });
+});
+
+const showAddSalesForm = () => {
+  dialog.open(AddSalesForm, {
+    props: {
+      header: 'Add PO Sale',
+      style: {
+          width: '50vw',
+      },
+      breakpoints:{
+          '960px': '75vw',
+          '640px': '90vw'
+      },
+      modal: true
+    }
+  });
+}
 
 const formatDate = (value) => {
   return value.toLocaleDateString('en-US', {
@@ -22,52 +115,94 @@ const formatDate = (value) => {
 </script>
 
 <template>
-  <div v-if="sales.length > 0">
-    <DataTable :value="sales" tableStyle="min-width: 50rem">
-      <Column field="id" header="Code"></Column>
-      <Column field="name" header="Name"></Column>
-      <Column field="purchaseDate" header="Purchase Date">
-        <template #body="slotProps">
-          {{ formatDate(slotProps.data.purchaseDate) }}
-        </template>
-      </Column>
-      <Column field="numberOfCards" header="Quantity"></Column>
-      <Column field="totalAmount" header="Amount">
-        <template #body="slotProps">
-          {{ formatAmount(slotProps.data.totalAmount) }}
-        </template>
-      </Column>
-    </DataTable>
-  </div>
+  <DataTable 
+    v-model:filters="filters"
+    @value-change="onValueChange"
+    filterDisplay="menu" 
+    tableStyle="min-width: 50rem"
+    paginator
+    :rows="10" 
+    :rowsPerPageOptions="[5, 10, 20, 50]"
+    :value="sales"
+    showGridlines
+    :globalFilterFields="['name', 'totalAmount']"
+    :loading="loading"
+    >
+    <template #header>
+      <div class="custom-table-header">
+        <Button type="button" label="Add" icon="pi pi-plus" variant="outlined" @click="showAddSalesForm" />
+        <div class="global-filter-container">
+          <IconField>
+            <InputIcon>
+                <i class="pi pi-search" />
+            </InputIcon>
+            <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
+          </IconField>
+          <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="clearFilter" />
+        </div>
+      </div>
+    </template>
+    <template #empty>
+      <div class="empty-data">No data found.</div>
+    </template>
+    <template #loading> 
+      <div class="loading-data">Loading PO Sales data. Please wait.</div> 
+    </template>
 
-
-  <!-- <div v-if="sales.length > 0">
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Purchase Date</th>
-          <th scope="col">Number of Cards</th>
-          <th scope="col">Total Amount</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="sale in sales" :key="sale.id">
-          <td>{{ sale.id }}</td>
-          <td>{{ sale.name }}</td>
-          <td>{{ formatDate(sale.purchaseDate) }}</td>
-          <td>{{ sale.numberOfCards }}</td>
-          <td>{{ formatAmount(sale.totalAmount) }}</td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="4">&nbsp;</td>
-          <td>{{ formatAmount(calculateTotal(sales, 'totalAmount')) }}</td>
-        </tr>
-      </tfoot>
-    </table>
-  </div> -->
-  <div v-else>No Data</div>
+    <Column field="id" header="Code" style="width: 15%"></Column>
+    <Column field="name" header="Name" style="width: 30%"></Column>
+    <Column field="numberOfCards" header="Quantity" style="width: 15%"></Column>
+    <Column 
+      header="Purchase Date" 
+      filterField="purchaseDate"
+      dataType="date" 
+      :show-filter-match-modes="false"
+    >
+      <template #body="{ data }">
+        {{ formatDate(data.purchaseDate) }}
+      </template>
+      <template #filter="{ filterModel }">
+        <div class="custom-date-filter">
+          <SelectButton
+            :model-value="filterModel.matchMode"
+            @update:model-value="(value) => { filterModel.matchMode = value; filterModel.value = null; }"
+            :options="[
+              { label: 'Month', value: 'monthIs' },
+              { label: 'Range', value: 'dateIsBetween' }
+            ]"
+            optionLabel="label"
+            optionValue="value"
+            aria-labelledby="date-filter-type"
+            fluid
+          />
+          <DatePicker
+            v-if="filterModel.matchMode === 'monthIs'"
+            v-model="filterModel.value"
+            view="month"
+            dateFormat="mm/yy"
+            placeholder="Select a month"
+          />
+          <DatePicker
+            v-if="filterModel.matchMode === 'dateIsBetween'"
+            v-model="filterModel.value"
+            selectionMode="range"
+            dateFormat="mm/dd/yy"
+            placeholder="Select a date range"
+          />
+        </div>
+      </template>
+    </Column>
+    <Column field="totalAmount" header="Amount" style="width: 25%;">
+      <template #body="{ data }">
+        {{ formatAmount(data.totalAmount) }}
+      </template>
+    </Column>
+    
+    <ColumnGroup type="footer" v-if="filteredData && filteredData.length > 0">
+      <Row>
+        <Column footer="Total:" :colspan="4" footerStyle="text-align: right"></Column>
+        <Column :footer="totalSales" />
+      </Row>
+    </ColumnGroup>
+  </DataTable>
 </template>
