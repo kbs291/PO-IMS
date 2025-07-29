@@ -104,7 +104,8 @@ const showAddSalesForm = () => {
           '960px': '75vw',
           '640px': '90vw'
       },
-      modal: true
+      modal: true,
+      position: 'top'
     },
     onClose: (opt) => {
       const callbackParams = opt.data;
@@ -143,6 +144,7 @@ const formatDate = (value) => {
     showGridlines
     :globalFilterFields="['cardCode', 'name', 'totalAmount']"
     :loading="loading"
+    stripedRows
   >
     <template #header>
       <div class="custom-table-header">
@@ -167,12 +169,13 @@ const formatDate = (value) => {
 
     <Column field="cardCode" header="Code" style="width: 15%"></Column>
     <Column field="name" header="Name" style="width: 30%"></Column>
-    <Column field="numberOfCards" header="Quantity" style="width: 15%"></Column>
+    <Column field="numberOfCards" header="Quantity" style="width: 12%"></Column>
     <Column 
       header="Purchase Date" 
       filterField="purchaseDate"
       dataType="date" 
       :show-filter-match-modes="false"
+      style="width: 18%"
     >
       <template #body="{ data }">
         {{ formatDate(data.purchaseDate) }}
