@@ -4,271 +4,331 @@
       "id": 1,
       "name": "Jack Johnson",
       "purchaseDate": "2025-03-24",
+      "addedDate": "2025-03-10",
       "numberOfCards": 2,
       "totalAmount": 1000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-03-31"
+      "firstDueDate": "2025-03-31",
+      "cardCode": "A72DJW5XQK"
     },
     {
       "id": 2,
       "name": "Scarlett Lee",
       "purchaseDate": "2025-06-26",
+      "addedDate": "2025-06-09",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-06-30"
+      "firstDueDate": "2025-06-30",
+      "cardCode": "9MVKP30XW8"
     },
     {
       "id": 3,
       "name": "Emma Robinson",
       "purchaseDate": "2025-03-04",
+      "addedDate": "2025-03-02",
       "numberOfCards": 2,
       "totalAmount": 1000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-03-15"
+      "firstDueDate": "2025-03-15",
+      "cardCode": "D3E9FH7ZL1"
     },
     {
       "id": 4,
       "name": "Scarlett Lewis",
       "purchaseDate": "2025-07-27",
+      "addedDate": "2025-07-11",
       "numberOfCards": 2,
       "totalAmount": 1000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-07-31"
+      "firstDueDate": "2025-07-31",
+      "cardCode": "XF20A8VRCQ"
     },
     {
       "id": 5,
       "name": "Amelia Thomas",
       "purchaseDate": "2025-06-04",
+      "addedDate": "2025-06-01",
       "numberOfCards": 4,
       "totalAmount": 2000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-06-15"
+      "firstDueDate": "2025-06-15",
+      "cardCode": "NKL83J20DM"
     },
     {
       "id": 6,
       "name": "James Davis",
       "purchaseDate": "2025-07-04",
+      "addedDate": "2025-07-02",
       "numberOfCards": 4,
       "totalAmount": 2000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-07-15"
+      "firstDueDate": "2025-07-15",
+      "cardCode": "PQ7FX5L19V"
     },
     {
       "id": 7,
       "name": "Sophia Taylor",
       "purchaseDate": "2025-05-01",
+      "addedDate": "2025-05-01",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-05-15"
+      "firstDueDate": "2025-05-15",
+      "cardCode": "R24LYC0ZEM"
     },
     {
       "id": 8,
       "name": "Emma Harris",
       "purchaseDate": "2025-01-15",
+      "addedDate": "2025-01-04",
       "numberOfCards": 4,
       "totalAmount": 2000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-01-31"
+      "firstDueDate": "2025-01-31",
+      "cardCode": "JV8RAQ3ZUT"
     },
     {
       "id": 9,
       "name": "Victoria Moore",
       "purchaseDate": "2025-06-13",
+      "addedDate": "2025-06-02",
       "numberOfCards": 2,
       "totalAmount": 1000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-06-15"
+      "firstDueDate": "2025-06-15",
+      "cardCode": "GH3MLZ7WXB"
     },
     {
       "id": 10,
       "name": "Logan Walker",
       "purchaseDate": "2025-07-10",
+      "addedDate": "2025-07-02",
       "numberOfCards": 1,
       "totalAmount": 500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-07-15"
+      "firstDueDate": "2025-07-15",
+      "cardCode": "Y9TR5E7UJQ"
     },
     {
       "id": 11,
       "name": "Sebastian Gonzalez",
       "purchaseDate": "2025-04-04",
+      "addedDate": "2025-04-01",
       "numberOfCards": 4,
       "totalAmount": 2000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-04-15"
+      "firstDueDate": "2025-04-15",
+      "cardCode": "LMNKX2DZTP"
     },
     {
       "id": 12,
       "name": "Victoria Johnson",
       "purchaseDate": "2025-04-26",
+      "addedDate": "2025-04-06",
       "numberOfCards": 1,
       "totalAmount": 500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-04-30"
+      "firstDueDate": "2025-04-30",
+      "cardCode": "CQP96H1VZE"
     },
     {
       "id": 13,
       "name": "Emma Sanchez",
       "purchaseDate": "2025-04-28",
+      "addedDate": "2025-04-14",
       "numberOfCards": 2,
       "totalAmount": 1000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-04-30"
+      "firstDueDate": "2025-04-30",
+      "cardCode": "W76C0PDYAE"
     },
     {
       "id": 14,
       "name": "Mason Jackson",
       "purchaseDate": "2025-03-13",
+      "addedDate": "2025-03-01",
       "numberOfCards": 1,
       "totalAmount": 500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-03-15"
+      "firstDueDate": "2025-03-15",
+      "cardCode": "ZPB1DJTY48"
     },
     {
       "id": 15,
       "name": "Liam White",
       "purchaseDate": "2025-02-10",
+      "addedDate": "2025-02-04",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-02-15"
+      "firstDueDate": "2025-02-15",
+      "cardCode": "KG5Y1VB6OX"
     },
     {
       "id": 16,
       "name": "Wyatt Wilson",
       "purchaseDate": "2025-07-24",
+      "addedDate": "2025-07-05",
       "numberOfCards": 4,
       "totalAmount": 2000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-07-31"
+      "firstDueDate": "2025-07-31",
+      "cardCode": "XD1BQYZM72"
     },
     {
       "id": 17,
       "name": "Amelia Lewis",
       "purchaseDate": "2025-05-06",
+      "addedDate": "2025-05-02",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-05-15"
+      "firstDueDate": "2025-05-15",
+      "cardCode": "FJ79PEKWXM"
     },
     {
       "id": 18,
       "name": "Wyatt Smith",
       "purchaseDate": "2025-01-24",
+      "addedDate": "2025-01-04",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-01-31"
+      "firstDueDate": "2025-01-31",
+      "cardCode": "NZKX87RJ4A"
     },
     {
       "id": 19,
       "name": "Scarlett Hernandez",
       "purchaseDate": "2025-04-08",
+      "addedDate": "2025-04-04",
       "numberOfCards": 2,
       "totalAmount": 1000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-04-15"
+      "firstDueDate": "2025-04-15",
+      "cardCode": "AV52MXTLCO"
     },
     {
       "id": 20,
       "name": "Amelia Johnson",
       "purchaseDate": "2025-01-14",
+      "addedDate": "2025-01-03",
       "numberOfCards": 4,
       "totalAmount": 2000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-01-15"
+      "firstDueDate": "2025-01-15",
+      "cardCode": "HFD0ZK7V1U"
     },
     {
       "id": 21,
       "name": "Liam Taylor",
       "purchaseDate": "2025-05-02",
+      "addedDate": "2025-05-01",
       "numberOfCards": 2,
       "totalAmount": 1000,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-05-15"
+      "firstDueDate": "2025-05-15",
+      "cardCode": "UMY1J68QPD"
     },
     {
       "id": 22,
       "name": "David White",
       "purchaseDate": "2025-02-09",
+      "addedDate": "2025-02-01",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-02-15"
+      "firstDueDate": "2025-02-15",
+      "cardCode": "TWJXCN83V5"
     },
     {
       "id": 23,
       "name": "Wyatt Harris",
       "purchaseDate": "2025-03-04",
+      "addedDate": "2025-03-02",
       "numberOfCards": 1,
       "totalAmount": 500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-03-15"
+      "firstDueDate": "2025-03-15",
+      "cardCode": "L36N7ZPWUE"
     },
     {
       "id": 24,
       "name": "Liam Johnson",
       "purchaseDate": "2025-01-23",
+      "addedDate": "2025-01-12",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-01-31"
+      "firstDueDate": "2025-01-31",
+      "cardCode": "DRCYT9BJW3"
     },
     {
       "id": 25,
       "name": "Ava Martin",
       "purchaseDate": "2025-01-08",
+      "addedDate": "2025-01-02",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-01-15"
+      "firstDueDate": "2025-01-15",
+      "cardCode": "YB8DKGLPZW"
     },
     {
       "id": 26,
       "name": "Daniel Gonzalez",
       "purchaseDate": "2025-06-01",
+      "addedDate": "2025-06-01",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-06-15"
+      "firstDueDate": "2025-06-15",
+      "cardCode": "SKW95C2FJO"
     },
     {
       "id": 27,
       "name": "Ethan Brown",
       "purchaseDate": "2025-01-01",
+      "addedDate": "2025-01-01",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-01-15"
+      "firstDueDate": "2025-01-15",
+      "cardCode": "K3JZVDL07B"
     },
     {
       "id": 28,
       "name": "Victoria Davis",
       "purchaseDate": "2025-04-29",
+      "addedDate": "2025-04-11",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-04-30"
+      "firstDueDate": "2025-04-30",
+      "cardCode": "WFR10E8VLS"
     },
     {
       "id": 29,
       "name": "Victoria Gonzalez",
       "purchaseDate": "2025-04-24",
+      "addedDate": "2025-04-01",
       "numberOfCards": 3,
       "totalAmount": 1500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-04-30"
+      "firstDueDate": "2025-04-30",
+      "cardCode": "P4VL8SYZ1K"
     },
     {
       "id": 30,
       "name": "Matthew Lopez",
       "purchaseDate": "2025-06-04",
+      "addedDate": "2025-06-02",
       "numberOfCards": 1,
       "totalAmount": 500,
       "numberOfInstallments": 4,
-      "firstDueDate": "2025-06-15"
+      "firstDueDate": "2025-06-15",
+      "cardCode": "R27QB9XLVM"
     }
   ],
   "installments": [],

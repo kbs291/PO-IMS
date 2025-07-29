@@ -34,13 +34,15 @@ export const useInstallmentsStore = defineStore('installments', () => {
       const installmentObj = {
         id: installments.length + 1,
         saleId: sale.id,
+        cardCode: sale.cardCode,
         name: sale.name,
         purchaseDate: sale.purchaseDate,
         numberOfCards: sale.numberOfCards,
         dueDate: dueDates[dateParams[count]],
         amountDue: sale.totalAmount / sale.numberOfInstallments,
         status: 'pending',
-        paymentDate: null
+        paymentDate: null,
+        addedDate: sale.addedDate
       }
       installments.push({ ...installmentObj });
       count++;

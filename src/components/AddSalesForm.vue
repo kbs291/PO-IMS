@@ -1,54 +1,94 @@
 <script setup>
-import { reactive } from 'vue';
+import { inject, reactive } from 'vue';
 import { useSalesStore } from '@/stores/sales';
-import { formatDate } from '@/utils/formatDate';
 
 const salesStore = useSalesStore();
-const salesObj = reactive({
+const dialogRef = inject('dialogRef');
+
+const initialValues = reactive({
   name: '',
-  purchaseDate: formatDate(),
-  numberOfCards: 1,
+  purchaseDate: new Date(),
+  numberOfCards: 1
 });
 
-function salesSubmit() {
-  salesStore.addSales({ ...salesObj });
-  salesObj.name = '';
-  salesObj.purchaseDate = formatDate();
-  salesObj.numberOfCards = 1;
+const resolver = ({ values }) => {
+  const errors = {};
+
+  if (!values.name) {
+    errors.name = [{ message: 'Name is required.' }];
+  }
+  if (!values.purchaseDate) {
+    errors.purchaseDate = [{ message: 'Purchase Date is required.' }];
+  }
+  if (!values.purchaseDate) {
+    errors.numberOfCards = [{ message: 'Number of Cards is required.' }];
+  }
+
+  return {
+    values,
+    errors
+  };
+};
+
+const onFormSubmit = ({ valid, values }) => {
+  if (valid) {
+    const salesObj = {
+      cardCode: generateRandomAlphanumeric(10),
+      name: values.name,
+      purchaseDate: values.purchaseDate,
+      numberOfCards: values.numberOfCards,
+      addedDate: new Date()
+    };
+
+    salesStore.addSales({ ...salesObj });
+    dialogRef.value.close({
+      status: 'success'
+    });
+  }
+};
+
+const generateRandomAlphanumeric = (length) => {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
 }
 </script>
 
 <template>
-  <h4>Add PO Card Sales</h4>
-  <form @submit.prevent="salesSubmit">
+  <Form 
+    v-slot="$form" 
+    :initialValues 
+    :resolver 
+    @submit="onFormSubmit" 
+    class="form"
+  >
     <div>
+      <FloatLabel variant="on">
+        <InputText name="name" type="text" id="name_lbl" fluid />
+        <label for="name_lbl">Name</label>
+      </FloatLabel>
+      <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{ $form.name.error?.message }}</Message>
+    </div>
+    <div class="form-group">
       <div>
-        <label for="name">Name</label>
-        <input 
-          type="text" id="name"   
-          v-model="salesObj.name" 
-          required 
-        />
+        <FloatLabel variant="on">
+          <DatePicker name="purchaseDate" inputId="purchase_date_lbl" showIcon iconDisplay="input" fluid />
+          <label for="purchase_date_lbl">Purchase Date</label>
+        </FloatLabel>
+        <Message v-if="$form.purchaseDate?.invalid" severity="error" size="small" variant="simple">{{ $form.purchaseDate.error?.message }}</Message>
       </div>
       <div>
-        <label for="date">Purchase Date</label>
-        <input 
-          type="date" id="date"  
-          v-model="salesObj.purchaseDate" 
-          required
-        />
-      </div>
-      <div>
-        <label for="number-of-cards">Number of cards</label>
-        <input 
-          type="number" id="number-of-cards" 
-          v-model="salesObj.numberOfCards" 
-          required 
-        />
-      </div>
-      <div>
-        <button type="submit">Submit</button>
+        <FloatLabel variant="on">
+          <InputNumber name="numberOfCards" inputId="quantity_lbl" mode="decimal" showButtons :min="1" fluid />
+          <label for="quantity_lbl">Number of Cards</label>
+        </FloatLabel>
+        <Message v-if="$form.numberOfCards?.invalid" severity="error" size="small" variant="simple">{{ $form.numberOfCards.error?.message }}</Message>
       </div>
     </div>
-  </form>
+    
+    <Button type="submit" label="Submit" severity="success" />
+  </Form>
 </template>
