@@ -13,6 +13,7 @@ export const useSalesStore = defineStore('sales', () => {
       const response = await axios.get('http://localhost:3000/sales');
       response.data.forEach((data) => {
         data.id = Number(data.id);
+        data.addedDate = new Date(data.addedDate);
         data.purchaseDate = new Date(data.purchaseDate);
         data.firstDueDate = new Date(data.firstDueDate);
         
@@ -28,13 +29,14 @@ export const useSalesStore = defineStore('sales', () => {
   
   const addSales = (sale) => {
     const id = sales.length + 1;
+    const addedDate = new Date(sale.addedDate);
     const purchaseDate = new Date(sale.purchaseDate);
     const totalAmount = sale.numberOfCards * 500;
     const numberOfInstallments = 4;
     const firstDueDate = generateDueDates(purchaseDate).first;
 
-    sales.push({ ...sale, id, purchaseDate, totalAmount, numberOfInstallments, firstDueDate });
-    installmentsStore.createInstallment({ ...sale, id, purchaseDate, totalAmount, numberOfInstallments, firstDueDate });
+    sales.push({ ...sale, id, purchaseDate, totalAmount, numberOfInstallments, firstDueDate, addedDate });
+    installmentsStore.createInstallment({ ...sale, id, purchaseDate, totalAmount, numberOfInstallments, firstDueDate, addedDate });
   }
 
   return { sales, fetchSales, addSales, generateDueDates };

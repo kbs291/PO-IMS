@@ -1,8 +1,9 @@
 <script setup>
-import { computed, ref, onBeforeMount, watch, defineAsyncComponent, onMounted } from 'vue';
-import { formatAmount } from '@/utils/formatAmount';
-import { useDialog } from 'primevue/usedialog';
+import { computed, ref, onBeforeMount, watch, onMounted } from 'vue';
 import { FilterOperator, FilterMatchMode, FilterService } from '@primevue/core/api';
+import { useToast } from 'primevue/usetoast';
+import { useDialog } from 'primevue/usedialog';
+import { formatAmount } from '@/utils/formatAmount';
 import AddSalesForm from '@/components/AddSalesForm.vue';
 
 const props = defineProps({
@@ -14,6 +15,7 @@ const props = defineProps({
 const loading = ref(true);
 const filters = ref(null);
 const filteredData = ref([]);
+const toast = useToast();
 const dialog = useDialog();
 const initFilters = () => {
   filters.value = {
@@ -77,6 +79,8 @@ const clearFilter = () => {
     initFilters();
 };
 
+const sortedSales = computed(() => props.sales.sort((a, b) => b.addedDate - a.addedDate))
+
 const totalSales = computed(() => {
   let total = 0;
 
@@ -94,13 +98,24 @@ const showAddSalesForm = () => {
     props: {
       header: 'Add PO Sale',
       style: {
-          width: '50vw',
+          width: '30vw',
       },
-      breakpoints:{
+      breakpoints: {
           '960px': '75vw',
           '640px': '90vw'
       },
       modal: true
+    },
+    onClose: (opt) => {
+      const callbackParams = opt.data;
+
+      if (callbackParams.status === 'success') {
+        toast.add({
+          severity: 'success',
+          summary: 'A record has been added.',
+          life: 3000
+        });
+      }
     }
   });
 }
@@ -115,6 +130,7 @@ const formatDate = (value) => {
 </script>
 
 <template>
+  <Toast />
   <DataTable 
     v-model:filters="filters"
     @value-change="onValueChange"
@@ -122,12 +138,12 @@ const formatDate = (value) => {
     tableStyle="min-width: 50rem"
     paginator
     :rows="10" 
-    :rowsPerPageOptions="[5, 10, 20, 50]"
-    :value="sales"
+    :rowsPerPageOptions="[5, 10, 15, 20]"
+    :value="sortedSales"
     showGridlines
-    :globalFilterFields="['name', 'totalAmount']"
+    :globalFilterFields="['cardCode', 'name', 'totalAmount']"
     :loading="loading"
-    >
+  >
     <template #header>
       <div class="custom-table-header">
         <Button type="button" label="Add" icon="pi pi-plus" variant="outlined" @click="showAddSalesForm" />
@@ -149,7 +165,7 @@ const formatDate = (value) => {
       <div class="loading-data">Loading PO Sales data. Please wait.</div> 
     </template>
 
-    <Column field="id" header="Code" style="width: 15%"></Column>
+    <Column field="cardCode" header="Code" style="width: 15%"></Column>
     <Column field="name" header="Name" style="width: 30%"></Column>
     <Column field="numberOfCards" header="Quantity" style="width: 15%"></Column>
     <Column 
