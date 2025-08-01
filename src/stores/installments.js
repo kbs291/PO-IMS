@@ -42,12 +42,28 @@ export const useInstallmentsStore = defineStore('installments', () => {
         amountDue: sale.totalAmount / sale.numberOfInstallments,
         status: 'pending',
         paymentDate: null,
-        addedDate: sale.addedDate
+        addedDate: sale.addedDate,
+        totalAmount: sale.totalAmount
       }
       installments.push({ ...installmentObj });
       count++;
     }
-  }
+  };
 
-  return { installments, fetchInstallments, createInstallment };
+  const updateInstallmentStatus = (installmentId) => {
+    installments.map(installment => {
+      if (installment.id === installmentId) {
+        installment.status = 'paid';
+        installment.paymentDate = new Date();
+      }
+    })
+
+
+    // const installment = installments.find(installment => installment.id === installmentId);
+    // installment.status = 'paid';
+    // installment.paymentDate = new Date();
+  };
+
+
+  return { installments, fetchInstallments, createInstallment, updateInstallmentStatus };
 });

@@ -1,93 +1,235 @@
 <script setup>
+import { computed, ref, onBeforeMount, watch } from 'vue';
+import { FilterOperator, FilterMatchMode, FilterService } from '@primevue/core/api';
+import { useToast } from 'primevue/usetoast';
+import { useDialog } from 'primevue';
 import { formatAmount } from '@/utils/formatAmount';
-import { formatDate } from '@/utils/formatDate';
-import { calculateTotal } from '@/utils/calculateTotal';
+import InstallmentDetails from '../InstallmentDetails.vue';
 
-defineProps({
+const props = defineProps({
   installments: {
     type: Array,
     required: true,
-  },
-  tab: {
-    type: String,
-    required: true,
-  },
+  }
 });
+const dialog = useDialog();
+const toast = useToast();
+const filters = ref(null);
+const filteredData = ref([]);
+const initFilters = () => {
+  filters.value = {
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    dueDate: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: 'monthIs' }] },
+  };
+};
+
+onBeforeMount(() => {
+  FilterService.register('monthIs', (value, filter) => {
+    if (filter === undefined || filter === null) {
+      return true;
+    }
+
+    if (value === undefined || value === null) {
+      return false;
+    }
+
+    const installmentDate = new Date(value);
+    const filterDate = new Date(filter);
+
+    return installmentDate.getMonth() === filterDate.getMonth() && installmentDate.getFullYear() === filterDate.getFullYear();
+  });
+
+  FilterService.register('dateIsBetween', (value, filter) => {
+    if (filter === undefined || filter === null || !Array.isArray(filter) || filter.length !== 2 || filter[0] === null || filter[1] === null) {
+      return true;
+    }
+
+    if (value === undefined || value === null) {
+      return false;
+    }
+
+    const rowDate = new Date(value);
+    const startDate = new Date(filter[0]);
+    const endDate = new Date(filter[1]);
+    endDate.setHours(23, 59, 59, 999); // Make end date inclusive for the whole day
+
+    return rowDate >= startDate && rowDate <= endDate;
+  });
+
+  initFilters();
+});
+
+// Watch for changes in the input 'installments' prop
+watch(() => props.installments, (newInstallments) => {
+  // When the base data changes, update our local copy.
+  // If filters are active, DataTable will emit a 'value-change' event,
+  // which will then update this ref with the filtered data.
+  // This ensures the footer is correct on initial load and when props change.
+  filteredData.value = newInstallments;
+}, { immediate: true });
+
+const onValueChange = (data) => (filteredData.value = data);
+
+const clearFilter = () => {
+    initFilters();
+};
+
+const sortedInstallments = computed(() => props.installments.sort((a, b) => b.dueDate - a.dueDate));
+
+const totalSales = computed(() => {
+  let total = 0;
+
+  if (filteredData.value) {
+    for (const installment of filteredData.value) {
+      total += installment.amountDue;
+    }
+  }
+
+  return total.toLocaleString('en-US', { style: 'currency', currency: 'PHP' });
+});
+
+const editInstallment = (installment) => {
+  dialog.open(InstallmentDetails, {
+    props: {
+      header: 'Installment Details',
+      style: {
+          width: '30vw',
+      },
+      breakpoints: {
+          '960px': '75vw',
+          '640px': '90vw'
+      },
+      modal: true,
+      position: 'top'
+    },
+    data: {
+      installment: installment
+    },
+    onClose: (opt) => {
+      const callbackParams = opt.data;
+
+      if (callbackParams && callbackParams.status === 'success') {
+        toast.add({
+          severity: 'success',
+          summary: 'A record has been updated.',
+          life: 3000
+        });
+      }
+    }
+  });
+}
+
+const formatDate = (value) => {
+  return value.toLocaleDateString('en-US', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric'
+  });
+};
 </script>
 
 <template>
-  <div v-if="installments.length > 0">
-    <table v-if="tab === 'all'">
-      <thead>
-        <tr>
-          <th scope="col">Sale ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Purchase Date</th>
-          <th scope="col">Number of Cards</th>
-          <th scope="col">Due Date</th>
-          <th scope="col">Amount Due</th>
-        </tr>
-      </thead>
-      <tbody class="table-group-divider">
-        <template v-for="installment in installments" :key="installment.id">
-          <tr>
-            <td rowspan="4">{{ installment.saleId }}</td>
-            <td rowspan="4">{{ installment.name }}</td>
-            <td rowspan="4">{{ formatDate(installment.purchaseDate) }}</td>
-            <td rowspan="4">{{ installment.numberOfCards }}</td>
-            <td>{{ formatDate(installment.dueDate.first) }}</td>
-            <td>{{ formatAmount(installment.amountDue.first) }}</td>
-          </tr>
-          <tr>
-            <td>{{ formatDate(installment.dueDate.second) }}</td>
-            <td>{{ formatAmount(installment.amountDue.second) }}</td>
-          </tr>
-          <tr>
-            <td>{{ formatDate(installment.dueDate.third) }}</td>
-            <td>{{ formatAmount(installment.amountDue.third) }}</td>
-          </tr>
-          <tr>
-            <td>{{ formatDate(installment.dueDate.fourth) }}</td>
-            <td>{{ formatAmount(installment.amountDue.fourth) }}</td>
-          </tr>
-        </template>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="5">&nbsp;</td>
-          <td>{{ formatAmount(calculateTotal(installments, 'totalAmount')) }}</td>
-        </tr>
-      </tfoot>
-    </table>
+  <Toast />
+  <DataTable 
+    v-model:filters="filters"
+    @value-change="onValueChange"
+    filterDisplay="menu"
+    tableStyle="min-width: 50rem"
+    :paginator="true"
+    :rows="10" 
+    :rowsPerPageOptions="[5, 10, 15, 20]"
+    :value="sortedInstallments" 
+    :globalFilterFields="['cardCode', 'name', 'totalAmount']"
+    showGridlines
+    stripedRows
+  >
+    <template #header>
+      <div class="custom-table-header">
+        <div class="global-filter-container">
+          <IconField>
+            <InputIcon>
+                <i class="pi pi-search" />
+            </InputIcon>
+            <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
+          </IconField>
+          <Button type="button" icon="pi pi-filter-slash" label="Clear" outlined @click="clearFilter" />
+        </div>
+      </div>
+    </template>
+    <template #empty>
+      <div class="empty-data">No data found.</div>
+    </template>
 
-    <table v-else>
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Sale ID</th>
-          <th scope="col">Name</th>
-          <th scope="col">Purchase Date</th>
-          <th scope="col">Due Date</th>
-          <th scope="col">Amount Due</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="installment in installments" :key="installment.id">
-          <td>{{ installment.id }}</td>
-          <td>{{ installment.saleId }}</td>
-          <td>{{ installment.name }}</td>
-          <td>{{ formatDate(installment.purchaseDate) }}</td>
-          <td>{{ formatDate(installment.dueDate) }}</td>
-          <td>{{ formatAmount(installment.amountDue) }}</td>
-        </tr>
-      </tbody>
-      <tfoot>
-        <tr>
-          <td colspan="5">&nbsp;</td>
-          <td>{{ formatAmount(calculateTotal(installments, 'amountDue')) }}</td>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
-  <div v-else>No Data</div>
+    <Column field="cardCode" header="Code"></Column>
+    <Column field="name" header="Name"></Column>
+    <Column field="numberOfCards" header="Card Quantity"></Column>
+    <Column 
+      header="Due Date"
+      filterField="dueDate"
+      dataType="date" 
+      :show-filter-match-modes="false"
+    >
+      <template #body="{ data }">
+        {{ formatDate(data.dueDate) }}
+      </template>
+      <template #filter="{ filterModel }">
+        <div class="custom-date-filter">
+          <SelectButton
+            :model-value="filterModel.matchMode"
+            @update:model-value="(value) => { filterModel.matchMode = value; filterModel.value = null; }"
+            :options="[
+              { label: 'Month', value: 'monthIs' },
+              { label: 'Range', value: 'dateIsBetween' }
+            ]"
+            optionLabel="label"
+            optionValue="value"
+            aria-labelledby="date-filter-type"
+            fluid
+          />
+          <DatePicker
+            v-if="filterModel.matchMode === 'monthIs'"
+            v-model="filterModel.value"
+            view="month"
+            dateFormat="mm/yy"
+            placeholder="Select a month"
+          />
+          <DatePicker
+            v-if="filterModel.matchMode === 'dateIsBetween'"
+            v-model="filterModel.value"
+            selectionMode="range"
+            dateFormat="mm/dd/yy"
+            placeholder="Select a date range"
+          />
+        </div>
+      </template>
+    </Column>
+    <Column field="status" header="Status">
+      <template #body="{ data }">
+        <Tag :value="data.status" :severity="data.status === 'pending' ? 'warn' : 'success'"></Tag>
+      </template>
+    </Column>
+    <Column field="amountDue" header="Due Amount">
+      <template #body="{ data }">
+        {{ formatAmount(data.amountDue) }}
+      </template>
+    </Column>
+    <Column>
+      <template #body="{ data }">
+        <Button icon="pi pi-pencil" outlined rounded class="mr-2" @click="editInstallment(data)" />
+      </template>
+    </Column>
+
+    <ColumnGroup type="footer" v-if="filteredData && filteredData.length > 0">
+      <Row>
+        <Column footer="Total:" :colspan="5" footerStyle="text-align: right"></Column>
+        <Column :colspan="2" :footer="totalSales" />
+      </Row>
+    </ColumnGroup>
+  </DataTable>
 </template>
+
+<style lang="scss" scoped>
+  .custom-table-header {
+    justify-content: flex-end;
+  }
+</style>

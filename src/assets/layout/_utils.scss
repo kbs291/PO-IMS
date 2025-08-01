@@ -38,14 +38,42 @@
   .form-group {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     gap: 1rem;
     & > * {
       flex: 1;
     }
+
+    &.card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+
+      .p-card {
+        background-color: var(--p-stone-200);
+
+        &.selected-due-date {
+          background-color: var(--p-card-background);
+        }
+      }
+
+      .card-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 0.5rem
+      }
+    }
   }
 
-  .p-button-success {
-    display: block;
-    margin: 0 auto;
+  .button-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  input:disabled {
+    background-color: var(--p-inputtext-background);
   }
 }

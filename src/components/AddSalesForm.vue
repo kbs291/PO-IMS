@@ -67,28 +67,30 @@ const generateRandomAlphanumeric = (length) => {
   >
     <div>
       <FloatLabel variant="on">
-        <InputText name="name" type="text" id="name_lbl" fluid />
-        <label for="name_lbl">Name</label>
+        <InputText name="name" type="text" id="name" :invalid="$form.name?.invalid" fluid />
+        <label for="name">Name</label>
       </FloatLabel>
       <Message v-if="$form.name?.invalid" severity="error" size="small" variant="simple">{{ $form.name.error?.message }}</Message>
     </div>
     <div class="form-group">
       <div>
         <FloatLabel variant="on">
-          <DatePicker name="purchaseDate" inputId="purchase_date_lbl" showIcon iconDisplay="input" fluid />
-          <label for="purchase_date_lbl">Purchase Date</label>
+          <DatePicker name="purchaseDate" inputId="purchaseDate" iconDisplay="input" :invalid="$form.purchaseDate?.invalid" showIcon fluid />
+          <label for="purchaseDate">Purchase Date</label>
         </FloatLabel>
         <Message v-if="$form.purchaseDate?.invalid" severity="error" size="small" variant="simple">{{ $form.purchaseDate.error?.message }}</Message>
       </div>
       <div>
         <FloatLabel variant="on">
-          <InputNumber name="numberOfCards" inputId="quantity_lbl" mode="decimal" showButtons :min="1" fluid />
-          <label for="quantity_lbl">Number of Cards</label>
+          <InputNumber name="numberOfCards" inputId="numberOfCards" mode="decimal" showButtons :min="1" :invalid="$form.numberOfCards?.invalid" fluid />
+          <label for="numberOfCards">Number of Cards</label>
         </FloatLabel>
         <Message v-if="$form.numberOfCards?.invalid" severity="error" size="small" variant="simple">{{ $form.numberOfCards.error?.message }}</Message>
       </div>
     </div>
     
-    <Button type="submit" label="Submit" severity="success" />
+    <div class="button-group">
+      <Button type="submit" label="Submit" severity="success" />
+    </div>
   </Form>
 </template>

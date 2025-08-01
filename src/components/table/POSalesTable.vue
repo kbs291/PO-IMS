@@ -110,7 +110,7 @@ const showAddSalesForm = () => {
     onClose: (opt) => {
       const callbackParams = opt.data;
 
-      if (callbackParams.status === 'success') {
+      if (callbackParams && callbackParams.status === 'success') {
         toast.add({
           severity: 'success',
           summary: 'A record has been added.',
@@ -137,13 +137,13 @@ const formatDate = (value) => {
     @value-change="onValueChange"
     filterDisplay="menu" 
     tableStyle="min-width: 50rem"
-    paginator
+    :paginator="true"
     :rows="10" 
     :rowsPerPageOptions="[5, 10, 15, 20]"
     :value="sortedSales"
-    showGridlines
     :globalFilterFields="['cardCode', 'name', 'totalAmount']"
     :loading="loading"
+    showGridlines
     stripedRows
   >
     <template #header>
