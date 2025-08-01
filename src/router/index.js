@@ -21,7 +21,7 @@ const router = createRouter({
         {
           path: '/installments',
           name: 'installments',
-          component: () => import('@/views/InstallmentsView.vue')
+          component: () => import('@/views/pages/Installments.vue')
         },
       ]
     },
