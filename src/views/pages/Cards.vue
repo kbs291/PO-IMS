@@ -3,13 +3,13 @@ import CardsTable from '@/components/table/CardsTable.vue';
 import { reactive } from 'vue';
 
 const cards = reactive([
-  {
-    id: 1,
-    code: 'A72DJW5XQK',
-    addedDate: new Date(),
-    availability: true,
-    purchaseDate: ''
-  }
+  // {
+  //   id: 1,
+  //   code: 'A72DJW5XQK',
+  //   addedDate: new Date(),
+  //   availability: true,
+  //   purchaseDate: ''
+  // }
 ]);
 </script>
 
