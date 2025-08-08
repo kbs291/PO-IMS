@@ -11,7 +11,7 @@ export const useCardsStore = defineStore('cards', () => {
 
       response.data.forEach( data => {
         const dataExists = cards.find( card => card.id === data.id);
-        
+
         if (!dataExists) {
           data.addedDate = new Date(data.addedDate);
           cards.push(data);
@@ -22,5 +22,10 @@ export const useCardsStore = defineStore('cards', () => {
     }
   }
 
-  return { cards, fetchCards };
+  const addCards = (card) => {
+    const id = cards.length + 1;
+    cards.push({ ...card, id });    
+  }
+
+  return { cards, fetchCards, addCards };
 });
