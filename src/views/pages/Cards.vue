@@ -1,16 +1,13 @@
 <script setup>
+import { onMounted } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useCardsStore } from '@/stores/cards';
 import CardsTable from '@/components/table/CardsTable.vue';
-import { reactive } from 'vue';
 
-const cards = reactive([
-  // {
-  //   id: 1,
-  //   code: 'A72DJW5XQK',
-  //   addedDate: new Date(),
-  //   availability: true,
-  //   purchaseDate: ''
-  // }
-]);
+const cardsStore = useCardsStore();
+const { cards } = storeToRefs(cardsStore);
+
+onMounted(async () => await cardsStore.fetchCards());
 </script>
 
 <template>
