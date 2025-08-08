@@ -332,6 +332,15 @@
     }
   ],
   "installments": [],
+  "cards": [
+    {
+      "id": 1,
+      "code": "A72DJW5XQK",
+      "addedDate": "2025-08-08",
+      "availability": true,
+      "purchaseDate": ""
+    }
+  ],
   "customers": [
     {
       "id": 1,
