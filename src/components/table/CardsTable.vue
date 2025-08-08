@@ -1,10 +1,44 @@
 <script setup>
+import { useDialog } from 'primevue';
+import { useToast } from 'primevue';
+import AddCardsForm from '../AddCardsForm.vue';
+
 defineProps({
   cards: {
     type: Array,
     required: true
   }
 });
+const dialog = useDialog();
+const toast = useToast();
+
+const showAddCardsForm = () => {
+  dialog.open(AddCardsForm, {
+    props: {
+      header: 'Add PO Cards',
+      style: {
+        width: '30vw',
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      },
+      modal: true,
+      position: 'top'
+    },
+    onClose: (opt) => {
+      const callbackParams = opt.data;
+
+      if (callbackParams && callbackParams.status === 'success') {
+        toast.add({
+          severity: 'success',
+          summary: 'A record has been added.',
+          life: 3000
+        });
+      }
+    }
+  })
+}
 
 const formatDate = (value) => {
   return value.toLocaleDateString('en-US', {
@@ -16,6 +50,7 @@ const formatDate = (value) => {
 </script>
 
 <template>
+  <Toast />
   <DataTable 
     tableStyle="min-width: 50rem"
     :value="cards" 
@@ -25,6 +60,11 @@ const formatDate = (value) => {
     showGridlines
     stripedRows
   >
+    <template #header>
+      <div class="custom-table-header">
+        <Button type="button" label="Add" icon="pi pi-plus" variant="outlined" @click="showAddCardsForm" />
+      </div>
+    </template>
     <template #empty>
       <div class="empty-data">No data found.</div>
     </template>
