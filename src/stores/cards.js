@@ -27,5 +27,9 @@ export const useCardsStore = defineStore('cards', () => {
     cards.push({ ...card, id });    
   }
 
-  return { cards, fetchCards, addCards };
+  const deleteCard = (card) => {
+    cards.splice(cards.findIndex(item => item.id === card.id), 1)
+  }
+
+  return { cards, fetchCards, addCards, deleteCard };
 });
