@@ -1,4 +1,5 @@
 <script setup>
+import { useCardsStore } from '@/stores/cards';
 import { useDialog } from 'primevue';
 import { useToast } from 'primevue';
 import AddCardsForm from '../AddCardsForm.vue';
@@ -9,6 +10,7 @@ defineProps({
     required: true
   }
 });
+const cardsStore = useCardsStore();
 const dialog = useDialog();
 const toast = useToast();
 
@@ -85,6 +87,11 @@ const formatDate = (value) => {
     <Column field="purchaseDate" header="Purchase Date">
       <template #body="{ data }">
         {{ data.purchaseDate && formatDate(data.purchaseDate) }}
+      </template>
+    </Column>
+    <Column>
+      <template #body="{ data }">
+        <Button icon="pi pi-trash" severity="warn" outlined rounded class="mr-2" v-if="data.availability" @click="cardsStore.deleteCard(data)" />
       </template>
     </Column>
   </DataTable>
