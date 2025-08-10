@@ -19,7 +19,12 @@ const items = computed(() => [
         label: 'Cards', 
         icon: 'pi pi-fw pi-credit-card', 
         to: { name: 'cards' }
-      },  
+      },
+      { 
+        label: 'Customers', 
+        icon: 'pi pi-fw pi-users', 
+        to: { name: 'customers' }
+      },
       { 
         label: 'PO Sales', 
         icon: 'pi pi-fw pi-chart-line', 
