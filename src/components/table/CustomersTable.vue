@@ -2,16 +2,16 @@
 import { computed, onBeforeMount, ref } from 'vue';
 import { useDialog, useToast } from 'primevue';
 import { FilterOperator, FilterMatchMode, FilterService } from '@primevue/core/api';
-import { useCardsStore } from '@/stores/cards';
-import AddCardsForm from '../AddCardsForm.vue';
+import { useCustomersStore } from '@/stores/customers';
+import AddCustomersForm from '../AddCustomersForm.vue';
 
-const props =defineProps({
-  cards: {
+const props = defineProps({
+  customers: {
     type: Array,
     required: true
   }
 });
-const cardsStore = useCardsStore();
+const customersStore = useCustomersStore();
 const dialog = useDialog();
 const toast = useToast();
 const filters = ref([]);
@@ -19,7 +19,6 @@ const initFilters = () => {
   filters.value = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
     addedDate: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: 'monthIs' }] },
-    purchaseDate: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: 'monthIs' }] }
   };
 };
 
@@ -63,13 +62,12 @@ const clearFilter = () => {
     initFilters();
 };
 
+const sortedCustomers = computed(() => props.customers.sort((a, b) => b.addedDate - a.addedDate))
 
-const sortedCards = computed(() => props.cards.sort((a, b) => b.addedDate - a.addedDate))
-
-const showAddCardsForm = () => {
-  dialog.open(AddCardsForm, {
+const showAddCustomerForm = (dialogType, values) => {
+  dialog.open(AddCustomersForm, {
     props: {
-      header: 'Add PO Cards',
+      header: 'Add Customers',
       style: {
         width: '30vw',
       },
@@ -78,7 +76,11 @@ const showAddCardsForm = () => {
         '640px': '90vw'
       },
       modal: true,
-      position: 'top'
+      position: 'top',
+    },
+    data: {
+      mode: dialogType,
+      customer: dialogType === 'edit' && values
     },
     onClose: (opt) => {
       const callbackParams = opt.data;
@@ -86,12 +88,12 @@ const showAddCardsForm = () => {
       if (callbackParams && callbackParams.status === 'success') {
         toast.add({
           severity: 'success',
-          summary: 'A record has been added.',
+          summary: callbackParams.mode === 'add' ? 'A customer has been added.' : 'A customer has been updated.',
           life: 3000
         });
       }
     }
-  })
+  });
 }
 
 const formatDate = (value) => {
@@ -105,21 +107,22 @@ const formatDate = (value) => {
 
 <template>
   <Toast />
-  <DataTable 
+  <DataTable
     tableStyle="min-width: 50rem"
     v-model:filters="filters"
-    filterDisplay="menu"
-    :value="sortedCards" 
-    :paginator="true" 
-    :rows="10" 
+    filterDisplay="menu" 
+    :value="sortedCustomers"
+    :paginator="true"
+    :rows="10"
     :rowsPerPageOptions="[5, 10, 15, 20]"
-    :globalFilterFields="['code']"
+    :globalFilterFields="['fullName', 'contactNumber']"
+    removableSort
     showGridlines
     stripedRows
   >
     <template #header>
       <div class="custom-table-header">
-        <Button type="button" label="Add" icon="pi pi-plus" variant="outlined" @click="showAddCardsForm" />
+        <Button type="button" label="Add" icon="pi pi-plus" variant="outlined" @click="showAddCustomerForm('add')" />
         <div class="global-filter-container">
           <IconField>
             <InputIcon>
@@ -134,12 +137,18 @@ const formatDate = (value) => {
     <template #empty>
       <div class="empty-data">No data found.</div>
     </template>
-    
-    <Column field="code" header="Code"></Column>
+
+    <Column field="id" header="ID"></Column>
+    <Column field="fullName" header="Customer Name" sortable></Column>
+    <Column field="contactNumber" header="Contact Number">
+      <template #body="{ data }">
+        {{ `0${data.contactNumber}` }}
+      </template>
+    </Column>
     <Column 
       header="Added Date"
-      filterField="addedDate" 
-      dataType="date" 
+      filterField="addedDate"
+      dataType="date"
       :show-filter-match-modes="false"
     >
       <template #body="{ data }">
@@ -176,56 +185,10 @@ const formatDate = (value) => {
         </div>
       </template>
     </Column>
-    <Column field="status" header="Status">
-      <template #body="{ data }">
-        <Tag :value="data.status" :severity="data.availability ? 'success' : 'warn'">
-          {{ data.availability ? 'Available' : 'Unavailable' }}
-        </Tag>
-      </template>
-    </Column>
-    <Column 
-      header="Purchase Date"
-      filterField="purchaseDate" 
-      dataType="date" 
-      :show-filter-match-modes="false"
-    >
-      <template #body="{ data }">
-        {{ data.purchaseDate && formatDate(data.purchaseDate) }}
-      </template>
-      <template #filter="{ filterModel }">
-        <div class="custom-date-filter">
-          <SelectButton
-            :model-value="filterModel.matchMode"
-            @update:model-value="(value) => { filterModel.matchMode = value; filterModel.value = null; }"
-            :options="[
-              { label: 'Month', value: 'monthIs' },
-              { label: 'Range', value: 'dateIsBetween' }
-            ]"
-            optionLabel="label"
-            optionValue="value"
-            aria-labelledby="date-filter-type"
-            fluid
-          />
-          <DatePicker
-            v-if="filterModel.matchMode === 'monthIs'"
-            v-model="filterModel.value"
-            view="month"
-            dateFormat="mm/yy"
-            placeholder="Select a month"
-          />
-          <DatePicker
-            v-if="filterModel.matchMode === 'dateIsBetween'"
-            v-model="filterModel.value"
-            selectionMode="range"
-            dateFormat="mm/dd/yy"
-            placeholder="Select a date range"
-          />
-        </div>
-      </template>
-    </Column>
     <Column>
       <template #body="{ data }">
-        <Button icon="pi pi-trash" severity="warn" outlined rounded class="mr-2" v-if="data.availability" @click="cardsStore.deleteCard(data)" />
+        <Button icon="pi pi-pencil" outlined rounded @click="showAddCustomerForm('edit', data)" />
+        <Button icon="pi pi-trash" severity="warn" outlined rounded style="margin-left: 0.5rem" @click="customersStore.deleteCustomer(data)" />
       </template>
     </Column>
   </DataTable>
