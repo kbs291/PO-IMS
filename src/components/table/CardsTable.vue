@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onBeforeMount, ref } from 'vue';
-import { useDialog, useToast } from 'primevue';
+import { useDialog, useToast, useConfirm } from 'primevue';
 import { FilterOperator, FilterMatchMode, FilterService } from '@primevue/core/api';
 import { useCardsStore } from '@/stores/cards';
 import AddCardsForm from '../AddCardsForm.vue';
@@ -14,6 +14,7 @@ const props =defineProps({
 const cardsStore = useCardsStore();
 const dialog = useDialog();
 const toast = useToast();
+const confirm = useConfirm();
 const filters = ref([]);
 const initFilters = () => {
   filters.value = {
@@ -94,6 +95,27 @@ const showAddCardsForm = () => {
   })
 }
 
+const deleteCard = (event, card) => {
+  confirm.require({
+    target: event.currentTarget,
+    message: 'Do you want to delete this record?',
+    icon: 'pi pi-info-circle',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Delete',
+      severity: 'danger'
+    },
+    accept: () => {
+      toast.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted', life: 3000 });
+      cardsStore.deleteCard(card);
+    }
+  });
+}
+
 const formatDate = (value) => {
   return value.toLocaleDateString('en-US', {
     day: '2-digit',
@@ -105,6 +127,7 @@ const formatDate = (value) => {
 
 <template>
   <Toast />
+  <ConfirmPopup />
   <DataTable 
     tableStyle="min-width: 50rem"
     v-model:filters="filters"
@@ -225,7 +248,8 @@ const formatDate = (value) => {
     </Column>
     <Column>
       <template #body="{ data }">
-        <Button icon="pi pi-trash" severity="warn" outlined rounded class="mr-2" v-if="data.availability" @click="cardsStore.deleteCard(data)" />
+        <Button icon="pi pi-pencil" outlined rounded />
+        <Button icon="pi pi-trash" severity="warn" outlined rounded style="margin-left: 0.5rem" v-if="data.availability" @click="deleteCard($event, data)" />
       </template>
     </Column>
   </DataTable>
