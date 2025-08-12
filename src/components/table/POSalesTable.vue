@@ -1,8 +1,7 @@
 <script setup>
 import { computed, ref, onBeforeMount, watch, onMounted } from 'vue';
 import { FilterOperator, FilterMatchMode, FilterService } from '@primevue/core/api';
-import { useToast } from 'primevue/usetoast';
-import { useDialog } from 'primevue/usedialog';
+import { useDialog, useToast, useConfirm } from 'primevue';
 import { formatAmount } from '@/utils/formatAmount';
 import AddSalesForm from '@/components/AddSalesForm.vue';
 
@@ -17,6 +16,7 @@ const filters = ref(null);
 const filteredData = ref([]);
 const toast = useToast();
 const dialog = useDialog();
+const confirm = useConfirm();
 const initFilters = () => {
   filters.value = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -121,6 +121,29 @@ const showAddSalesForm = () => {
   });
 }
 
+const deletePoSales = (event, poSales) => {
+  confirm.require({
+    target: event.currentTarget,
+    message: 'Do you want to delete this record?',
+    icon: 'pi pi-info-circle',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Delete',
+      severity: 'danger'
+    },
+    accept: () => {
+      toast.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted', life: 3000 });
+      console.log(poSales);
+      
+      // cardsStore.deleteCard(card);
+    }
+  });
+}
+
 const formatDate = (value) => {
   return value.toLocaleDateString('en-US', {
     day: '2-digit',
@@ -132,6 +155,7 @@ const formatDate = (value) => {
 
 <template>
   <Toast />
+  <ConfirmPopup />
   <DataTable 
     v-model:filters="filters"
     @value-change="onValueChange"
@@ -167,15 +191,14 @@ const formatDate = (value) => {
       <div class="loading-data">Loading PO Sales data. Please wait.</div> 
     </template>
 
-    <Column field="cardCode" header="Code" style="width: 15%"></Column>
-    <Column field="name" header="Name" style="width: 30%"></Column>
-    <Column field="numberOfCards" header="Quantity" style="width: 12%"></Column>
+    <Column field="cardCode" header="Code"></Column>
+    <Column field="name" header="Name"></Column>
+    <Column field="numberOfCards" header="Quantity"></Column>
     <Column 
       header="Purchase Date" 
       filterField="purchaseDate"
       dataType="date" 
       :show-filter-match-modes="false"
-      style="width: 18%"
     >
       <template #body="{ data }">
         {{ formatDate(data.purchaseDate) }}
@@ -211,16 +234,22 @@ const formatDate = (value) => {
         </div>
       </template>
     </Column>
-    <Column field="totalAmount" header="Amount" style="width: 25%;">
+    <Column field="totalAmount" header="Amount">
       <template #body="{ data }">
         {{ formatAmount(data.totalAmount) }}
+      </template>
+    </Column>
+    <Column style="width: 13%">
+      <template #body="{ data }">
+        <Button icon="pi pi-pencil" outlined rounded />
+        <Button icon="pi pi-trash" severity="warn" outlined rounded style="margin-left: 0.5rem" @click="deletePoSales($event, data)" />
       </template>
     </Column>
     
     <ColumnGroup type="footer" v-if="filteredData && filteredData.length > 0">
       <Row>
         <Column footer="Total:" :colspan="4" footerStyle="text-align: right"></Column>
-        <Column :footer="totalSales" />
+        <Column :colspan="2" :footer="totalSales" />
       </Row>
     </ColumnGroup>
   </DataTable>

@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onBeforeMount, ref } from 'vue';
-import { useDialog, useToast } from 'primevue';
+import { useDialog, useToast, useConfirm } from 'primevue';
 import { FilterOperator, FilterMatchMode, FilterService } from '@primevue/core/api';
 import { useCustomersStore } from '@/stores/customers';
 import AddCustomersForm from '../AddCustomersForm.vue';
@@ -14,6 +14,7 @@ const props = defineProps({
 const customersStore = useCustomersStore();
 const dialog = useDialog();
 const toast = useToast();
+const confirm = useConfirm();
 const filters = ref([]);
 const initFilters = () => {
   filters.value = {
@@ -96,6 +97,27 @@ const showAddCustomerForm = (dialogType, values) => {
   });
 }
 
+const deleteCustomer = (event, customer) => {
+  confirm.require({
+    target: event.currentTarget,
+    message: 'Do you want to delete this record?',
+    icon: 'pi pi-info-circle',
+    rejectProps: {
+      label: 'Cancel',
+      severity: 'secondary',
+      outlined: true
+    },
+    acceptProps: {
+      label: 'Delete',
+      severity: 'danger'
+    },
+    accept: () => {
+      toast.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted', life: 3000 });
+      customersStore.deleteCustomer(customer)
+    }
+  });
+}
+
 const formatDate = (value) => {
   return value.toLocaleDateString('en-US', {
     day: '2-digit',
@@ -107,6 +129,7 @@ const formatDate = (value) => {
 
 <template>
   <Toast />
+  <ConfirmPopup />
   <DataTable
     tableStyle="min-width: 50rem"
     v-model:filters="filters"
@@ -188,7 +211,7 @@ const formatDate = (value) => {
     <Column>
       <template #body="{ data }">
         <Button icon="pi pi-pencil" outlined rounded @click="showAddCustomerForm('edit', data)" />
-        <Button icon="pi pi-trash" severity="warn" outlined rounded style="margin-left: 0.5rem" @click="customersStore.deleteCustomer(data)" />
+        <Button icon="pi pi-trash" severity="warn" outlined rounded style="margin-left: 0.5rem" @click="deleteCustomer($event, data)" />
       </template>
     </Column>
   </DataTable>
