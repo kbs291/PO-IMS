@@ -93,10 +93,10 @@ const totalSales = computed(() => {
   return total.toLocaleString('en-US', { style: 'currency', currency: 'PHP' });
 });
 
-const showAddSalesForm = () => {
+const showAddSalesForm = (values, transactionType = 'add') => {
   dialog.open(AddSalesForm, {
     props: {
-      header: 'Add PO Sale',
+      header: transactionType === 'add' ? 'Add PO Sale' : 'Update PO Sale',
       style: {
           width: '30vw',
       },
@@ -107,13 +107,17 @@ const showAddSalesForm = () => {
       modal: true,
       position: 'top'
     },
+    data: {
+      sales: values || null,
+      transactionType: transactionType
+    },
     onClose: (opt) => {
       const callbackParams = opt.data;
 
       if (callbackParams && callbackParams.status === 'success') {
         toast.add({
           severity: 'success',
-          summary: 'A record has been added.',
+          summary: transactionType === 'add' ? 'A record has been added.' : 'A record has been updated.',
           life: 3000
         });
       }
@@ -167,6 +171,7 @@ const formatDate = (value) => {
     :value="sortedSales"
     :globalFilterFields="['cardCode', 'name', 'totalAmount']"
     :loading="loading"
+    removableSort
     showGridlines
     stripedRows
   >
@@ -192,7 +197,7 @@ const formatDate = (value) => {
     </template>
 
     <Column field="cardCode" header="Code"></Column>
-    <Column field="name" header="Name"></Column>
+    <Column field="name" header="Name" sortable></Column>
     <Column field="numberOfCards" header="Quantity"></Column>
     <Column 
       header="Purchase Date" 
@@ -241,7 +246,7 @@ const formatDate = (value) => {
     </Column>
     <Column style="width: 13%">
       <template #body="{ data }">
-        <Button icon="pi pi-pencil" outlined rounded />
+        <Button icon="pi pi-pencil" outlined rounded @click="showAddSalesForm(data, 'edit')" />
         <Button icon="pi pi-trash" severity="warn" outlined rounded style="margin-left: 0.5rem" @click="deletePoSales($event, data)" />
       </template>
     </Column>
