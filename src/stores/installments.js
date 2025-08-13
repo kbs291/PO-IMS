@@ -57,13 +57,20 @@ export const useInstallmentsStore = defineStore('installments', () => {
         installment.paymentDate = new Date();
       }
     })
-
-
-    // const installment = installments.find(installment => installment.id === installmentId);
-    // installment.status = 'paid';
-    // installment.paymentDate = new Date();
   };
 
+  const updateInstallments = (sale) => {
+    installments.map(installment => {
+      if (installment.saleId === sale.id) {
+        installment.name = sale.name;
+        installment.purchaseDate = sale.purchaseDate;
+        installment.numberOfCards = sale.numberOfCards;
+        installment.amountDue = sale.totalAmount / sale.numberOfInstallments;
+        installment.totalAmount = sale.totalAmount;
+      }
+    })
+  }
 
-  return { installments, fetchInstallments, createInstallment, updateInstallmentStatus };
+
+  return { installments, fetchInstallments, createInstallment, updateInstallments, updateInstallmentStatus };
 });

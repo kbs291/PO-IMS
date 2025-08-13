@@ -1,10 +1,11 @@
 <script setup>
-import { inject, reactive } from 'vue';
+import { inject, onBeforeMount, reactive, ref } from 'vue';
 import { useSalesStore } from '@/stores/sales';
 
 const salesStore = useSalesStore();
 const dialogRef = inject('dialogRef');
 
+const mode = ref('add');
 const initialValues = reactive({
   name: '',
   purchaseDate: new Date(),
@@ -24,23 +25,33 @@ const resolver = ({ values }) => {
     errors.numberOfCards = [{ message: 'Number of Cards is required.' }];
   }
 
-  return {
-    values,
-    errors
-  };
+  return { values, errors };
 };
+
+onBeforeMount(() => {
+  const { sales, transactionType } = dialogRef.value.data;
+  if (transactionType === 'edit') {
+    Object.assign(initialValues, sales);
+    mode.value = transactionType
+  }
+})
 
 const onFormSubmit = ({ valid, values }) => {
   if (valid) {
-    const salesObj = {
-      cardCode: generateRandomAlphanumeric(10),
-      name: values.name,
-      purchaseDate: values.purchaseDate,
-      numberOfCards: values.numberOfCards,
-      addedDate: new Date()
-    };
+    if (mode.value === 'add') {
+      const salesObj = {
+        cardCode: generateRandomAlphanumeric(10),
+        name: values.name,
+        purchaseDate: values.purchaseDate,
+        numberOfCards: values.numberOfCards,
+        addedDate: new Date()
+      };
 
-    salesStore.addSales({ ...salesObj });
+      salesStore.addSales({ ...salesObj });
+    } else {
+      salesStore.updateSales(values);
+    }
+    
     dialogRef.value.close({
       status: 'success'
     });
@@ -65,6 +76,7 @@ const generateRandomAlphanumeric = (length) => {
     @submit="onFormSubmit" 
     class="form"
   >
+    <InputText name="id" hidden v-if="initialValues.id" />
     <div>
       <FloatLabel variant="on">
         <InputText name="name" type="text" id="name" :invalid="$form.name?.invalid" fluid />
@@ -75,7 +87,7 @@ const generateRandomAlphanumeric = (length) => {
     <div class="form-group">
       <div>
         <FloatLabel variant="on">
-          <DatePicker name="purchaseDate" inputId="purchaseDate" iconDisplay="input" :invalid="$form.purchaseDate?.invalid" showIcon fluid />
+          <DatePicker name="purchaseDate" inputId="purchaseDate" iconDisplay="input" :invalid="$form.purchaseDate?.invalid" showIcon fluid :disabled="mode === 'edit'" />
           <label for="purchaseDate">Purchase Date</label>
         </FloatLabel>
         <Message v-if="$form.purchaseDate?.invalid" severity="error" size="small" variant="simple">{{ $form.purchaseDate.error?.message }}</Message>
@@ -90,7 +102,7 @@ const generateRandomAlphanumeric = (length) => {
     </div>
     
     <div class="button-group">
-      <Button type="submit" label="Submit" severity="success" />
+      <Button type="submit" :label="mode === 'edit' ? 'Update' : 'Submit'" :severity="mode === 'edit' ? 'info' : 'success'" />
     </div>
   </Form>
 </template>

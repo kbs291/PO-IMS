@@ -1,5 +1,5 @@
 import { reactive, ref } from "vue";
-import { defineStore } from "pinia";
+import { defineStore, storeToRefs } from "pinia";
 import { useInstallmentsStore } from "./installments";
 import { generateDueDates } from "@/utils/generateDueDates";
 import axios from "axios";
@@ -39,5 +39,18 @@ export const useSalesStore = defineStore('sales', () => {
     installmentsStore.createInstallment({ ...sale, id, purchaseDate, totalAmount, numberOfInstallments, firstDueDate, addedDate });
   }
 
-  return { sales, fetchSales, addSales, generateDueDates };
+  const updateSales = (sale) => {
+    sales.map(item => {
+      if (item.id === sale.id) {
+        item.name = sale.name;
+        item.purchaseDate = sale.purchaseDate;
+        item.numberOfCards = sale.numberOfCards;
+        item.totalAmount = sale.numberOfCards * 500;
+
+        installmentsStore.updateInstallments(item);
+      }
+    });
+  }
+
+  return { sales, fetchSales, addSales, updateSales, generateDueDates };
 });
