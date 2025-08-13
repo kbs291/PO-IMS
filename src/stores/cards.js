@@ -27,9 +27,18 @@ export const useCardsStore = defineStore('cards', () => {
     cards.push({ ...card, id });    
   }
 
+  const updateCard = (card) => {
+    cards.map(item => {
+      if (item.id === card.id) {
+        item.code = card.code;
+        item.addedDate = card.addedDate;
+      }
+    });
+  }
+
   const deleteCard = (card) => {
     cards.splice(cards.findIndex(item => item.id === card.id), 1)
   }
 
-  return { cards, fetchCards, addCards, deleteCard };
+  return { cards, fetchCards, addCards, updateCard, deleteCard };
 });

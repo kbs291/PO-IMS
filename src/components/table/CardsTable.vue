@@ -4,6 +4,7 @@ import { useDialog, useToast, useConfirm } from 'primevue';
 import { FilterOperator, FilterMatchMode, FilterService } from '@primevue/core/api';
 import { useCardsStore } from '@/stores/cards';
 import AddCardsForm from '../AddCardsForm.vue';
+import EditCardsForm from '../EditCardsForm.vue';
 
 const props =defineProps({
   cards: {
@@ -88,6 +89,37 @@ const showAddCardsForm = () => {
         toast.add({
           severity: 'success',
           summary: 'A record has been added.',
+          life: 3000
+        });
+      }
+    }
+  })
+}
+
+const showEditCardsForm = (values) => {
+  dialog.open(EditCardsForm, {
+    props: {
+      header: 'Edit PO Card',
+      style: {
+        width: '30vw',
+      },
+      breakpoints: {
+        '960px': '75vw',
+        '640px': '90vw'
+      },
+      modal: true,
+      position: 'top'
+    },
+    data: {
+      card: values
+    },
+    onClose: (opt) => {
+      const callbackParams = opt.data;
+
+      if (callbackParams && callbackParams.status === 'success') {
+        toast.add({
+          severity: 'success',
+          summary: 'A record has been updated.',
           life: 3000
         });
       }
@@ -248,7 +280,7 @@ const formatDate = (value) => {
     </Column>
     <Column>
       <template #body="{ data }">
-        <Button icon="pi pi-pencil" outlined rounded />
+        <Button icon="pi pi-pencil" outlined rounded @click="showEditCardsForm(data)" />
         <Button icon="pi pi-trash" severity="warn" outlined rounded style="margin-left: 0.5rem" v-if="data.availability" @click="deleteCard($event, data)" />
       </template>
     </Column>

@@ -1,6 +1,6 @@
 <script setup>
 import { useCustomersStore } from '@/stores/customers'
-import { inject, onBeforeMount, onMounted, reactive, ref } from 'vue';
+import { inject, onBeforeMount, reactive, ref } from 'vue';
 
 const customersStore = useCustomersStore();
 const dialogRef = inject('dialogRef');
@@ -104,7 +104,7 @@ const onFormSubmit = ({ valid, values }) => {
     </div>
 
     <div class="button-group">
-      <Button type="submit" label="Submit" severity="success" />
+      <Button type="submit" :label="mode === 'edit' ? 'Update' : 'Submit'" :severity="mode === 'edit' ? 'info' : 'success'" />
     </div>
   </Form>
 </template>
