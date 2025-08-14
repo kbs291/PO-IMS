@@ -1,17 +1,20 @@
 <script setup>
 import { computed, ref, onBeforeMount, watch, onMounted } from 'vue';
+import { useSalesStore } from '@/stores/sales';
 import { FilterOperator, FilterMatchMode, FilterService } from '@primevue/core/api';
 import { useDialog, useToast, useConfirm } from 'primevue';
 import { formatAmount } from '@/utils/formatAmount';
 import AddSalesForm from '@/components/AddSalesForm.vue';
 
+const isLoading = ref(true);
+
 const props = defineProps({
   sales: {
     type: Array,
     required: true,
-  },
+  }
 });
-const loading = ref(true);
+const salesStore = useSalesStore();
 const filters = ref(null);
 const filteredData = ref([]);
 const toast = useToast();
@@ -58,10 +61,7 @@ onBeforeMount(() => {
   });
 
   initFilters();
-});
-
-onMounted(() => {
-  loading.value = false;
+  isLoading.value = false;
 });
 
 // Watch for changes in the input 'sales' prop
@@ -79,7 +79,7 @@ const clearFilter = () => {
     initFilters();
 };
 
-const sortedSales = computed(() => props.sales.sort((a, b) => b.addedDate - a.addedDate))
+const sortedSales = computed(() => props.sales.sort((a, b) => b.addedDate - a.addedDate));
 
 const totalSales = computed(() => {
   let total = 0;
@@ -125,7 +125,7 @@ const showAddSalesForm = (values, transactionType = 'add') => {
   });
 }
 
-const deletePoSales = (event, poSales) => {
+const deletePoSales = (event, values) => {
   confirm.require({
     target: event.currentTarget,
     message: 'Do you want to delete this record?',
@@ -141,9 +141,7 @@ const deletePoSales = (event, poSales) => {
     },
     accept: () => {
       toast.add({ severity: 'info', summary: 'Confirmed', detail: 'Record deleted', life: 3000 });
-      console.log(poSales);
-      
-      // cardsStore.deleteCard(card);
+      salesStore.deleteSales(values);
     }
   });
 }
@@ -170,7 +168,7 @@ const formatDate = (value) => {
     :rowsPerPageOptions="[5, 10, 15, 20]"
     :value="sortedSales"
     :globalFilterFields="['cardCode', 'name', 'totalAmount']"
-    :loading="loading"
+    :loading="isLoading"
     removableSort
     showGridlines
     stripedRows
@@ -192,19 +190,34 @@ const formatDate = (value) => {
     <template #empty>
       <div class="empty-data">No data found.</div>
     </template>
-    <template #loading> 
+    <!-- <template #loading> 
       <div class="loading-data">Loading PO Sales data. Please wait.</div> 
-    </template>
+    </template> -->
 
-    <Column field="cardCode" header="Code"></Column>
-    <Column field="name" header="Name" sortable></Column>
-    <Column field="numberOfCards" header="Quantity"></Column>
+    <Column field="cardCode" header="Code">
+      <template #loading>
+        <Skeleton></Skeleton>
+      </template>
+    </Column>
+    <Column field="name" header="Name" sortable>
+      <template #loading>
+        <Skeleton></Skeleton>
+      </template>
+    </Column>
+    <Column field="numberOfCards" header="Quantity">
+      <template #loading>
+        <Skeleton></Skeleton>
+      </template>
+    </Column>
     <Column 
       header="Purchase Date" 
       filterField="purchaseDate"
       dataType="date" 
       :show-filter-match-modes="false"
     >
+      <template #loading>
+        <Skeleton></Skeleton>
+      </template>
       <template #body="{ data }">
         {{ formatDate(data.purchaseDate) }}
       </template>
@@ -240,11 +253,17 @@ const formatDate = (value) => {
       </template>
     </Column>
     <Column field="totalAmount" header="Amount">
+      <template #loading>
+        <Skeleton></Skeleton>
+      </template>
       <template #body="{ data }">
         {{ formatAmount(data.totalAmount) }}
       </template>
     </Column>
     <Column style="width: 13%">
+      <template #loading>
+        <Skeleton></Skeleton>
+      </template>
       <template #body="{ data }">
         <Button icon="pi pi-pencil" outlined rounded @click="showAddSalesForm(data, 'edit')" />
         <Button icon="pi pi-trash" severity="warn" outlined rounded style="margin-left: 0.5rem" @click="deletePoSales($event, data)" />
