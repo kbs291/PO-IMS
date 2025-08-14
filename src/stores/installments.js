@@ -71,6 +71,11 @@ export const useInstallmentsStore = defineStore('installments', () => {
     })
   }
 
+  const deleteInstallments = (sale) => {
+    const filteredInstallments = installments.filter(installment => installment.saleId !== sale.id);
+    installments.splice(0, installments.length, ...filteredInstallments);
+  }
 
-  return { installments, fetchInstallments, createInstallment, updateInstallments, updateInstallmentStatus };
+
+  return { installments, fetchInstallments, createInstallment, updateInstallments, updateInstallmentStatus, deleteInstallments };
 });

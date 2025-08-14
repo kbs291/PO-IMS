@@ -8,6 +8,7 @@ import InstallmentsTable from '@/components/table/InstallmentsTable.vue';
 const installmentsStore = useInstallmentsStore();
 const { installments } = storeToRefs(installmentsStore);
 const salesStore = useSalesStore();
+const { sales } = storeToRefs(salesStore);
 
 onMounted(async () => { 
   /** 
@@ -15,8 +16,8 @@ onMounted(async () => {
    * - Temporarily added fetchSales() to address empty table on page refresh
    * - Will remove this function once backend is ready
    */
-  await salesStore.fetchSales();
-  await installmentsStore.fetchInstallments();
+  if (sales.value.length === 0) await salesStore.fetchSales();
+  if (installments.value.length === 0) await installmentsStore.fetchInstallments();
 });
 
 const installmentsWithSaleGroup = computed(() => {

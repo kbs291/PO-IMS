@@ -52,5 +52,15 @@ export const useSalesStore = defineStore('sales', () => {
     });
   }
 
-  return { sales, fetchSales, addSales, updateSales, generateDueDates };
+  const deleteSales = (sale) => {
+    sales.map(item => {
+      if (item.id === sale.id) {
+        sales.splice(sales.findIndex(item => item.id === sale.id), 1);
+
+        installmentsStore.deleteInstallments(item);
+      }
+    })
+  }
+
+  return { sales, fetchSales, addSales, updateSales, deleteSales, generateDueDates };
 });
