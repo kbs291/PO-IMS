@@ -7,7 +7,7 @@ import CardsTable from '@/components/table/CardsTable.vue';
 const cardsStore = useCardsStore();
 const { cards } = storeToRefs(cardsStore);
 
-onMounted(async () => await cardsStore.fetchCards());
+onMounted(async () => cards.value.length === 0 && await cardsStore.fetchCards());
 </script>
 
 <template>

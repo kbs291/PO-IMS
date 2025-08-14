@@ -7,9 +7,7 @@ import POSalesTable from '@/components/table/POSalesTable.vue';
 const salesStore = useSalesStore();
 const { sales } = storeToRefs(salesStore);
 
-onMounted(async () => {
-  if (sales.value.length === 0) await salesStore.fetchSales()
-});
+onMounted(async () => sales.value.length === 0 && await salesStore.fetchSales());
 </script>
 
 <template>

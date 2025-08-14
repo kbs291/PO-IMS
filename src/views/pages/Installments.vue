@@ -16,8 +16,8 @@ onMounted(async () => {
    * - Temporarily added fetchSales() to address empty table on page refresh
    * - Will remove this function once backend is ready
    */
-  if (sales.value.length === 0) await salesStore.fetchSales();
-  if (installments.value.length === 0) await installmentsStore.fetchInstallments();
+  sales.value.length === 0 && await salesStore.fetchSales();
+  installments.value.length === 0 && await installmentsStore.fetchInstallments();
 });
 
 const installmentsWithSaleGroup = computed(() => {
