@@ -7,7 +7,7 @@ import CustomersTable from '@/components/table/CustomersTable.vue';
 const customersStore = useCustomersStore();
 const { customers } = storeToRefs(customersStore);
 
-onMounted(async () => await customersStore.fetchCustomers());
+onMounted(async () => customers.value.length === 0 && await customersStore.fetchCustomers());
 </script>
 
 <template>
