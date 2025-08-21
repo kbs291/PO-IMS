@@ -1,21 +1,20 @@
 <script setup>
-import { computed, onBeforeMount, ref } from 'vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useDialog, useToast, useConfirm } from 'primevue';
 import { FilterOperator, FilterMatchMode, FilterService } from '@primevue/core/api';
 import { useCardsStore } from '@/stores/cards';
 import AddCardsForm from '../AddCardsForm.vue';
 import EditCardsForm from '../EditCardsForm.vue';
 
-const props =defineProps({
-  cards: {
-    type: Array,
-    required: true
-  }
-});
 const cardsStore = useCardsStore();
+const { cards } = storeToRefs(cardsStore);
+
 const dialog = useDialog();
 const toast = useToast();
 const confirm = useConfirm();
+const loading = ref(true);
+
 const filters = ref([]);
 const initFilters = () => {
   filters.value = {
@@ -61,12 +60,14 @@ onBeforeMount(() => {
   initFilters()
 });
 
+onMounted(async () => {
+  if (cards.value.length === 0) await cardsStore.fetchCards();
+  loading.value = false;
+});
+
 const clearFilter = () => {
     initFilters();
 };
-
-
-const sortedCards = computed(() => props.cards.sort((a, b) => b.addedDate - a.addedDate))
 
 const showAddCardsForm = () => {
   dialog.open(AddCardsForm, {
@@ -164,11 +165,12 @@ const formatDate = (value) => {
     tableStyle="min-width: 50rem"
     v-model:filters="filters"
     filterDisplay="menu"
-    :value="sortedCards" 
+    :value="cards" 
     :paginator="true" 
     :rows="10" 
     :rowsPerPageOptions="[5, 10, 15, 20]"
     :globalFilterFields="['code']"
+    :loading
     showGridlines
     stripedRows
   >
