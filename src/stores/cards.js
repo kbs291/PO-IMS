@@ -1,20 +1,21 @@
 import axios from "axios";
 import { defineStore } from "pinia";
-import { reactive } from "vue";
+import { computed, reactive } from "vue";
 
 export const useCardsStore = defineStore('cards', () => {
-  const cards = reactive([]);
+  const cardsData = reactive([]);
+  const cards = computed(() => cardsData.sort((a, b) => b.addedDate - a.addedDate));
 
   const fetchCards = async () => {
     try {
       const response = await axios.get('http://localhost:3000/cards');
 
       response.data.forEach( data => {
-        const dataExists = cards.find( card => card.id === data.id);
+        const dataExists = cardsData.find( card => card.id === data.id);
 
         if (!dataExists) {
           data.addedDate = new Date(data.addedDate);
-          cards.push(data);
+          cardsData.push(data);
         }
       });
     } catch (error) {
@@ -23,12 +24,12 @@ export const useCardsStore = defineStore('cards', () => {
   }
 
   const addCards = (card) => {
-    const id = cards.length + 1;
-    cards.push({ ...card, id });    
+    const id = cardsData.length + 1;
+    cardsData.push({ ...card, id });    
   }
 
   const updateCard = (card) => {
-    cards.map(item => {
+    cardsData.map(item => {
       if (item.id === card.id) {
         item.code = card.code;
         item.addedDate = card.addedDate;
@@ -37,8 +38,8 @@ export const useCardsStore = defineStore('cards', () => {
   }
 
   const deleteCard = (card) => {
-    cards.splice(cards.findIndex(item => item.id === card.id), 1)
+    cardsData.splice(cardsData.findIndex(item => item.id === card.id), 1)
   }
 
-  return { cards, fetchCards, addCards, updateCard, deleteCard };
+  return { cardsData, cards, fetchCards, addCards, updateCard, deleteCard };
 });
